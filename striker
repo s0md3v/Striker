@@ -212,7 +212,7 @@ for url in params:
     if '<svg/onload=alert()>' in r:
         print '\033[1;32m[+]\033[1;m One or more parameters are vulnerable to XSS'
     break
-   
+
+print '\033[1;32m[+]\033[1;m These are the URLs having parameters:'
 for url in params:
-   print '\033[1;32m[+]\033[1;m These are the URLs having parameters:'
    print url
