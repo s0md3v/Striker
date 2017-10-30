@@ -48,14 +48,14 @@ else:
         target = 'https://'+target
 
 def sqli(url):
+    print '''\033[1;97m[>]\033[1;m Using SQLMap api to check for SQL injection vulnerabilities. Don\'t
+    worry we are using an online service and it doesn\' depend on your internet connection.
+    This scan will take 2-3 minutes.'''
     sqli = br.open('https://suip.biz/?act=sqlmap').read()
     br.select_form(nr=0)
     br.form['url'] = url
     req = br.submit()
     result = req.read()
-    print '''\033[1;97m[>]\033[1;m Using SQLMap api to check for SQL injection vulnerabilities. Don\'t
-    worry we are using an online service and it doesn\' depend on your internet connection.
-    This scan will take 2-3 minutes.'''
     match = search(r"---(?s).*---", result)
     if match:
         print '\033[1;32m[+]\033[1;m One or more parameters are vulnerable to SQL injection'
