@@ -1,6 +1,7 @@
+<img src='https://i.imgur.com/MDPLLbV.png' />
+
 # Striker
 Striker is an offensive information and vulnerability scanner.
-<img src='https://i.imgur.com/MDPLLbV.png' />
 
 ## Features
 Just supply a domain name to <b>Striker</b> and it will automatically do the following for you:
@@ -21,5 +22,11 @@ Just supply a domain name to <b>Striker</b> and it will automatically do the fol
 - [x] SQLi scan using online implemention of SQLMap (takes < 3 min.)
 - [x] Basic XSS scanning
 
+### Screenshots
+<img src='https://i.imgur.com/8nqAD1v.png' />
+<img src='https://i.imgur.com/2IdJwr8.png' />
+<img src='https://dnsdumpster.com/static/map/jnujaipur.ac.in.png' />
+Want to see what else it can do? Try it yourself.
+
 #### Contribute
-If you want to contribute to this project, report bugs and make it better and hit me with a pull request.
+If you want to contribute to this project, report any bugs you encounter and help me add more features to it.
