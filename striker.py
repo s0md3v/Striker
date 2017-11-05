@@ -80,11 +80,18 @@ def cms(domain):
          WordPress = True
     except:
       pass
-    if detect or WordPress:
+    if detect:
         print "\033[93m[!]\033[0m CMS Detected : " + detect.group().split('">')[1][:-27]
         detect = detect.group().split('">')[1][:-27]
-        if 'WordPress' in detect or WordPress:
+        if 'WordPress' in detect:
             option = raw_input('\033[1;34m[?]\033[1;m Would you like to use WPScan? [Y/n] ').lower()
+            if option == 'n':
+                pass
+            else:
+                os.system('wpscan --random-agent --url %s'%domain)
+    elif WordPress:
+        print "\033[93m[!]\033[0m CMS Detected : WordPress" 
+        option = raw_input('\033[1;34m[?]\033[1;m Would you like to use WPScan? [Y/n] ').lower()
             if option == 'n':
                 pass
             else:
