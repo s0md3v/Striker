@@ -80,7 +80,7 @@ def cms(domain):
          WordPress = True
     except:
       pass
-    if detect:
+    if detect or WordPress:
         print "\033[93m[!]\033[0m CMS Detected : " + detect.group().split('">')[1][:-27]
         detect = detect.group().split('">')[1][:-27]
         if 'WordPress' in detect or WordPress:
