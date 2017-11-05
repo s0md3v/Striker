@@ -75,7 +75,7 @@ def cms(domain):
     detect = search(r'">[^<]*</a><a href="/New-Detection', result)
     try:
       r = br.open(target + '/robots.txt').read()
-      if "wp-admin" in r:
+      if "wp-admin" in str(r):
          detect = "WordPress"
     except:
       pass
