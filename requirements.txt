@@ -1,0 +1,5 @@
+requests==2.18.1
+mechanize==0.2.5
+beautifulsoup4==4.6.0
+simplejson==3.12.0
+timing==0.0.1
