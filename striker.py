@@ -73,6 +73,12 @@ def sqli(url):
 def cms(domain):
     result = br.open('https://whatcms.org/?s='+domain).read()
     detect = search(r'">[^<]*</a><a href="/New-Detection', result)
+    try:
+      r = br.open(target + '/robots.txt').read()
+      if "wp-admin" in r:
+         detect = "WordPress"
+    except:
+      pass
     if detect:
         print "\033[93m[!]\033[0m CMS Detected : " + detect.group().split('">')[1][:-27]
         detect = detect.group().split('">')[1][:-27]
