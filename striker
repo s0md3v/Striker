@@ -147,13 +147,16 @@ def dnsdump(domain):
     print('\n\033[1;32m[+]\033[1;m TXT Records')
     for entry in res['dns_records']['txt']:
         print(entry)
-    print '\033[1;32m[+]\033[1;m DNS Map: https://dnsdumpster.com/static/map/%s.png'%domain
+    print '\n\033[1;32m[+]\033[1;m DNS Map: https://dnsdumpster.com/static/map/%s.png\n'%domain
 
 def fingerprint(ip_addr):
-    result = br.open('https://www.censys.io/ipv4/%s/raw'% ip_addr).read()
-    match = search(r'&#34;os_description&#34;: &#34;[^<]*&#34;', result)
-    if match:
-        print '\033[1;32m[+]\033[1;m Operating System : ' + match.group().split('n&#34;: &#34;')[1][:-5]
+	try:
+	    result = br.open('https://www.censys.io/ipv4/%s/raw'% ip_addr).read()
+	    match = search(r'&#34;os_description&#34;: &#34;[^<]*&#34;', result)
+	    if match:
+	        print '\033[1;32m[+]\033[1;m Operating System : ' + match.group().split('n&#34;: &#34;')[1][:-5]
+	except:
+		pass
 ip_addr = socket.gethostbyname(domain)
 print '\033[93m[!]\033[0m IP Address : %s'% ip_addr
 try:
