@@ -74,36 +74,38 @@ def sqli(url):
 
 
 def cms(domain):
-    result = br.open('https://whatcms.org/?s=' + domain).read()
-    detect = search(r'">[^<]*</a><a href="/New-Detection', result)
-    WordPress = False
     try:
-        r = br.open(target + '/robots.txt').read()
-        if "wp-admin" in str(r):
-            WordPress = True
-    except:
-        pass
-    if detect:
-        print "\033[93m[!]\033[0m CMS Detected : " + detect.group().split('">')[1][:-27]
-        detect = detect.group().split('">')[1][:-27]
-        if 'WordPress' in detect:
+        result = br.open('https://whatcms.org/?s=' + domain).read()
+        detect = search(r'">[^<]*</a><a href="/New-Detection', result)
+        WordPress = False
+        try:
+            r = br.open(target + '/robots.txt').read()
+            if "wp-admin" in str(r):
+                WordPress = True
+        except:
+            pass
+        if detect:
+            print "\033[93m[!]\033[0m CMS Detected : " + detect.group().split('">')[1][:-27]
+            detect = detect.group().split('">')[1][:-27]
+            if 'WordPress' in detect:
+                option = raw_input(
+                    '\033[1;34m[?]\033[1;m Would you like to use WPScan? [Y/n] ').lower()
+                if option == 'n':
+                    pass
+                else:
+                    os.system('wpscan --random-agent --url %s' % domain)
+        elif WordPress:
+            print "\033[93m[!]\033[0m CMS Detected : WordPress"
             option = raw_input(
                 '\033[1;34m[?]\033[1;m Would you like to use WPScan? [Y/n] ').lower()
             if option == 'n':
                 pass
             else:
                 os.system('wpscan --random-agent --url %s' % domain)
-    elif WordPress:
-        print "\033[93m[!]\033[0m CMS Detected : WordPress"
-        option = raw_input(
-            '\033[1;34m[?]\033[1;m Would you like to use WPScan? [Y/n] ').lower()
-        if option == 'n':
-            pass
         else:
-            os.system('wpscan --random-agent --url %s' % domain)
-    else:
-        print "\033[93m[!]\033[0m " + domain + " doesn't seem to use a CMS"
-
+            print "\033[93m[!]\033[0m " + domain + " doesn't seem to use a CMS"
+    except:
+        pass
 
 def honeypot(ip_addr):
     honey = "https://api.shodan.io/labs/honeyscore/%s?key=C23OXE0bVMrul2YeqcL7zxb6jZ4pj2by" % ip_addr
@@ -172,14 +174,17 @@ def dnsdump(domain):
     print('\n\033[1;32m[+]\033[1;m TXT Records')
     for entry in res['dns_records']['txt']:
         print(entry)
-    print '\033[1;32m[+]\033[1;m DNS Map: https://dnsdumpster.com/static/map/%s.png' % domain
+    print '\n\033[1;32m[+]\033[1;m DNS Map: https://dnsdumpster.com/static/map/%s.png\n' % domain
 
 
 def fingerprint(ip_addr):
-    result = br.open('https://www.censys.io/ipv4/%s/raw' % ip_addr).read()
-    match = search(r'&#34;os_description&#34;: &#34;[^<]*&#34;', result)
-    if match:
-        print '\033[1;32m[+]\033[1;m Operating System : ' + match.group().split('n&#34;: &#34;')[1][:-5]
+    try:
+        result = br.open('https://www.censys.io/ipv4/%s/raw' % ip_addr).read()
+        match = search(r'&#34;os_description&#34;: &#34;[^<]*&#34;', result)
+        if match:
+            print '\033[1;32m[+]\033[1;m Operating System : ' + match.group().split('n&#34;: &#34;')[1][:-5]
+     except:
+         pass
 
 
 ip_addr = socket.gethostbyname(domain)
