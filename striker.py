@@ -34,8 +34,7 @@ print '''\033[1;31m
   \_____  \\\\   __\_  __ \  |  |/ // __ \_  __ \\
   /        \|  |  |  | \/  |    <\  ___/|  | \/
  /_______  /|__|  |__|  |__|__|_ \\\\___  >__|
-         \/                     \/    \/
-        \033[1;m'''
+         \/                     \/    \/\033[1;m'''
 target = raw_input('\033[1;34m[?]\033[1;m Enter the target: ')
 if 'http' in target:
     parsed_uri = urlparse(target)
@@ -47,7 +46,6 @@ else:
         target = 'http://' + target
     except:
         target = 'https://' + target
-
 
 def sqli(url):
     print '''\033[1;97m[>]\033[1;m Using SQLMap api to check for SQL injection vulnerabilities. Don\'t
@@ -136,7 +134,6 @@ def honeypot(ip_addr):
     except:
         print '\033[1;31m[-]\033[1;m Honeypot prediction failed'
 
-
 def nmap(ip_addr):
     port = "http://api.hackertarget.com/nmap/?q=" + ip_addr
     result = br.open(port).read()
@@ -145,16 +142,15 @@ def nmap(ip_addr):
     result = os.linesep.join([s for s in result.splitlines() if s])
     print result
 
-
 def bypass(domain):
     post = urlencode({'cfS': domain})
     result = br.open(
         'http://www.crimeflare.info/cgi-bin/cfsearch.cgi ', post).read()
+
     match = search(r' \b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b', result)
     if match:
         bypass.ip_addr = match.group().split(' ')[1][:-1]
         print '\033[1;32m[+]\033[1;m Real IP Address : ' + bypass.ip_addr
-
 
 def dnsdump(domain):
     res = DNSDumpsterAPI(False).search(domain)
