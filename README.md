@@ -22,6 +22,14 @@ Just supply a domain name to <b>Striker</b> and it will automatically do the fol
 - [x] SQLi scan using online implemention of SQLMap (takes < 3 min.)
 - [x] Basic XSS scanning
 
+## Install
+```bash
+git clone $repo
+cd Striker
+pip install -r requirements.txt
+python striker.py
+```
+
 ### Screenshots
 <img src='https://i.imgur.com/8nqAD1v.png' />
 <img src='https://i.imgur.com/2IdJwr8.png' />
