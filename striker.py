@@ -179,7 +179,7 @@ def fingerprint(ip_addr):
         match = search(r'&#34;os_description&#34;: &#34;[^<]*&#34;', result)
         if match:
             print '\033[1;32m[+]\033[1;m Operating System : ' + match.group().split('n&#34;: &#34;')[1][:-5]
-     except:
+    except:
          pass
 
 
