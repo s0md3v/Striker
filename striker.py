@@ -6,6 +6,7 @@ from re import search, sub
 import cookielib
 import requests
 import os
+import sys
 from urllib import urlencode
 from plugins.DNSDumpsterAPI import DNSDumpsterAPI
 params = []
@@ -27,7 +28,6 @@ br.set_handle_refresh(mechanize._http.HTTPRefreshProcessor(), max_time=1)
 br.addheaders = [
     ('User-agent', 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.1) Gecko/2008071615 Fedora/3.0.1-1.fc9 Firefox/3.0.1')]
 
-
 print '''\033[1;31m
    _________ __          __ __
   /   _____//  |________|__|  | __ ___________
@@ -35,7 +35,7 @@ print '''\033[1;31m
   /        \|  |  |  | \/  |    <\  ___/|  | \/
  /_______  /|__|  |__|  |__|__|_ \\\\___  >__|
          \/                     \/    \/\033[1;m'''
-target = raw_input('\033[1;34m[?]\033[1;m Enter the target: ')
+target = sys.argv[1] if len(sys.argv)==2 else raw_input('\033[1;34m[?]\033[1;m Enter the target: ')
 if 'http' in target:
     parsed_uri = urlparse(target)
     domain = '{uri.netloc}'.format(uri=parsed_uri)
@@ -182,8 +182,12 @@ def fingerprint(ip_addr):
     except:
          pass
 
+try:
+    ip_addr = socket.gethostbyname(domain)
+except socket.gaierror as err:
+    print err.strerror
+    sys.exit(err.errno)
 
-ip_addr = socket.gethostbyname(domain)
 print '\033[93m[!]\033[0m IP Address : %s' % ip_addr
 try:
     r = requests.get(target)
