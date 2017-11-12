@@ -24,7 +24,7 @@ Just supply a domain name to <b>Striker</b> and it will automatically do the fol
 
 ## Install
 ```bash
-git clone $repo
+git clone https://github.com/UltimateHackers/Striker
 cd Striker
 pip install -r requirements.txt
 python striker.py
