@@ -76,7 +76,7 @@ class dns_force():
 
     def getdns(self, domain):
         DNS.ParseResolvConf("/etc/resolv.conf")
-        # nameserver=DNS.defaults['server'][0]
+        nameserver=DNS.defaults['server'][0]
         dom = domain
         if self.subdo == True:
             dom = domain.split(".")
