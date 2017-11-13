@@ -49,7 +49,7 @@ else:
 
 def sqli(url):
     print '''\033[1;97m[>]\033[1;m Using SQLMap api to check for SQL injection vulnerabilities. Don\'t
-    worry we are using an online service and it doesn\' depend on your internet connection.
+    worry we are using an online service and it doesn\'t depend on your internet connection.
     This scan will take 2-3 minutes.'''
     sqli = br.open('https://suip.biz/?act=sqlmap').read()
     br.select_form(nr=0)
