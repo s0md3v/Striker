@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 # THESE ARE SOME VARIBALES TO BE FILLED BY SOMDEV
 
-details = {"name": "Striker",
+details = {"name": "striker",
            "version": "1.0.1",
            "brief_description": "",
            "long_description": "",    # you can use github readme.md as it is (markdown format accepted)
