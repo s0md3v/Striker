@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 # THESE ARE SOME VARIBALES TO BE FILLED BY SOMDEV
 
 details = {"name": "Striker",
-           "version": "",
+           "version": "1.0.1",
            "brief_description": "",
            "long_description": "",    # you can use github readme.md as it is (markdown format accepted)
            "author_name": "Somdev Sangwan",
@@ -14,7 +14,7 @@ details = {"name": "Striker",
            "keywords": "",
            "entry_point": {'console_scripts': ['striker=striker:main']},
            "dependencies": ["requests==2.18.1","mechanize==0.2.5", "bs4==0.0.1"],
-           "python_version_supported": ">=2.1, <=2.7",
+           "python_version_supported": ">=2.0, <=2.9.9",
            "classifiers": [], # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
            "packages": find_packages(exclude=['contrib', 'docs', 'tests*'])
            }
