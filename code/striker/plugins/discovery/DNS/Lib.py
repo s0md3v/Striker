@@ -26,11 +26,10 @@
 import string
 import types
 
-import Type
 import Class
 import Opcode
 import Status
-
+import Type
 from Base import DNSError
 
 
@@ -753,10 +752,10 @@ if __name__ == "__main__":
 # added identifying header to top of each file
 #
 # Revision 1.7  2001/07/19 07:50:44  anthony
-# Added SRV (RFC 2782) support. Code from Michael Ströder.
+# Added SRV (RFC 2782) support. Code from Michael Strï¿½der.
 #
 # Revision 1.6  2001/07/19 07:39:18  anthony
-# 'type' -> 'rrtype' in getRRheader(). Fix from Michael Ströder.
+# 'type' -> 'rrtype' in getRRheader(). Fix from Michael Strï¿½der.
 #
 # Revision 1.5  2001/07/19 07:34:19  anthony
 # oops. glitch in storeRR (fixed now).

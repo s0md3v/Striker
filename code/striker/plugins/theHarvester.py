@@ -1,17 +1,12 @@
 #!/usr/bin/env python
 
-import string
-import httplib
-import sys
-import os
-from socket import *
-import re
 import getopt
-import requests
+import re
+from socket import *
 
 from discovery import *
-from lib import htmlExport
 from lib import hostchecker
+
 
 def usage():
 

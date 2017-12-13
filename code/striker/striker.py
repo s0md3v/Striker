@@ -1,13 +1,16 @@
 #!/usr/bin/env python2
-import mechanize
-import socket
-from urlparse import urlparse
-from re import search, sub
 import cookielib
-import requests
+import mechanize
 import os
+import socket
+from re import search, sub
 from urllib import urlencode
-from plugins.DNSDumpsterAPI import DNSDumpsterAPI
+from urlparse import urlparse
+
+import requests
+
+from code.striker.plugins.DNSDumpsterAPI import DNSDumpsterAPI
+
 params = []
 # Browser
 br = mechanize.Browser()
