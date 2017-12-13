@@ -9,14 +9,15 @@ This code is covered by the standard Python License.
     Base functionality. Request and Response classes, that sort of thing.
 """
 
+import asyncore
 import socket
 import string
-import types
 import time
-import Type
+import types
+
 import Class
 import Opcode
-import asyncore
+import Type
 
 
 class DNSError(Exception):
@@ -154,7 +155,6 @@ class DnsRequest:
 
     def req(self, *name, **args):
         " needs a refactoring "
-        import time
         import Lib
         self.argparse(name, args)
         # if not self.args:

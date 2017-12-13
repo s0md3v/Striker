@@ -1,8 +1,8 @@
-import IPy
-import DNS
 import string
-import socket
 import sys
+
+import DNS
+import IPy
 
 
 class dns_reverse():
@@ -30,7 +30,7 @@ class dns_reverse():
             sys.stdout.write("\r" + host)
             sys.stdout.flush()
         try:
-            name = DNS.Base.DnsRequest(b, qtype='ptr').req().answers[0]['data']
+            name = striker.plugins.discovery.DNS.Base.DnsRequest(b, qtype='ptr').req().answers[0]['data']
             return host + ":" + name
         except:
             pass

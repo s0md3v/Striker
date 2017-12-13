@@ -6,9 +6,10 @@
 # This code is covered by the standard Python License.
 #
 
+import string
+
 # routines for lazy people.
 import Base
-import string
 
 
 def revlookup(name):
