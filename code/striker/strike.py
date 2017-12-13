@@ -6,10 +6,13 @@ import socket
 from re import search, sub
 from urllib import urlencode
 from urlparse import urlparse
-
 import requests
+from plugins.DNSDumpsterAPI import DNSDumpsterAPI
 
-from code.striker.plugins.DNSDumpsterAPI import DNSDumpsterAPI
+# checking sudo for running wpscan in parrot
+if os.geteuid() != 0:
+    print "\033[1;31m[x] Root Privileges Required"
+    os._exit(1)
 
 params = []
 # Browser
