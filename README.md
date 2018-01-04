@@ -30,6 +30,15 @@ pip install -r requirements.txt
 python striker.py
 ```
 
+## Docker
+
+```bash
+git clone https://github.com/UltimateHackers/Striker
+cd Striker
+docker build -t striker .
+docker run -it striker:latest
+```
+
 ### Screenshots
 <img src='https://i.imgur.com/8nqAD1v.png' />
 <img src='https://i.imgur.com/2IdJwr8.png' />
