@@ -154,22 +154,21 @@ def bypass(domain):
 
 def dnsdump(domain):
     res = DNSDumpsterAPI(False).search(domain)
-    print('\n\033[1;32m[+]\033[1;m DNS Records')
+    print '\n\033[1;32m[+]\033[1;m DNS Records'
     for entry in res['dns_records']['dns']:
-        print(("{domain} ({ip}) {as} {provider} {country}".format(**entry)))
+        print '{domain} ({ip}) {as} {provider} {country}'.format(**entry)
     for entry in res['dns_records']['mx']:
-        print("\n\033[1;32m[+]\033[1;m MX Records")
-        print(("{domain} ({ip}) {as} {provider} {country}".format(**entry)))
-    print("\n\033[1;32m[+]\033[1;m Host Records (A)")
+        print '\n\033[1;32m[+]\033[1;m MX Records'
+        print '{domain} ({ip}) {as} {provider} {country}'.format(**entry)
+    print '\n\033[1;32m[+]\033[1;m Host Records (A)'
     for entry in res['dns_records']['host']:
         if entry['reverse_dns']:
-            print(
-                ("{domain} ({reverse_dns}) ({ip}) {as} {provider} {country}".format(**entry)))
+            print '{domain} ({reverse_dns}) ({ip}) {as} {provider} {country}'.format(**entry)
         else:
-            print(("{domain} ({ip}) {as} {provider} {country}".format(**entry)))
-    print('\n\033[1;32m[+]\033[1;m TXT Records')
+            print '{domain} ({ip}) {as} {provider} {country}'.format(**entry)
+    print '\n\033[1;32m[+]\033[1;m TXT Records'
     for entry in res['dns_records']['txt']:
-        print(entry)
+        print entry
     print '\n\033[1;32m[+]\033[1;m DNS Map: https://dnsdumpster.com/static/map/%s.png\n' % \
             domain[4:] if domain.startswith('www.') else domain
 
