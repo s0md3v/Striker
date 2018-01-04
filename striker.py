@@ -64,9 +64,9 @@ def sqli(url):
         if option == 'n':
             pass
         else:
-            print"\033[1;31m-\033[1;m" * 40
+            print '\033[1;31m-\033[1;m' * 40
             print match.group().split('---')[1][:-3]
-            print"\033[1;31m-\033[1;m" * 40
+            print '\033[1;31m-\033[1;m' * 40
     else:
         print '\033[1;31m[-]\033[1;m None of parameters is vulnerable to SQL injection'
 
@@ -83,7 +83,7 @@ def cms(domain):
         except:
             pass
         if detect:
-            print "\033[93m[!]\033[0m CMS Detected : " + detect.group().split('">')[1][:-27]
+            print '\033[93m[!]\033[0m CMS Detected : ' + detect.group().split('">')[1][:-27]
             detect = detect.group().split('">')[1][:-27]
             if 'WordPress' in detect:
                 option = raw_input(
@@ -93,7 +93,7 @@ def cms(domain):
                 else:
                     os.system('wpscan --random-agent --url %s' % domain)
         elif WordPress:
-            print "\033[93m[!]\033[0m CMS Detected : WordPress"
+            print '\033[93m[!]\033[0m CMS Detected : WordPress'
             option = raw_input(
                 '\033[1;34m[?]\033[1;m Would you like to use WPScan? [Y/n] ').lower()
             if option == 'n':
@@ -101,41 +101,41 @@ def cms(domain):
             else:
                 os.system('wpscan --random-agent --url %s' % domain)
         else:
-            print "\033[93m[!]\033[0m " + domain + " doesn't seem to use a CMS"
+            print '\033[93m[!]\033[0m ' + domain + ' doesn\'t seem to use a CMS'
     except:
         pass
 
 def honeypot(ip_addr):
-    honey = "https://api.shodan.io/labs/honeyscore/%s?key=C23OXE0bVMrul2YeqcL7zxb6jZ4pj2by" % ip_addr
+    honey = 'https://api.shodan.io/labs/honeyscore/%s?key=C23OXE0bVMrul2YeqcL7zxb6jZ4pj2by' % ip_addr
     try:
         phoney = br.open(honey).read()
         if '0.0' in phoney:
-            print "\033[1;32m[+]\033[1;m Honeypot Probabilty: 0%"
+            print '\033[1;32m[+]\033[1;m Honeypot Probabilty: 0%'
         elif '0.1' in phoney:
-            print "\033[1;32m[+]\033[1;m Honeypot Probabilty: 10%"
+            print '\033[1;32m[+]\033[1;m Honeypot Probabilty: 10%'
         elif '0.2' in phoney:
-            print "\033[1;32m[+]\033[1;m Honeypot Probabilty: 20%"
+            print '\033[1;32m[+]\033[1;m Honeypot Probabilty: 20%'
         elif '0.3' in phoney:
-            print "\033[1;32m[+]\033[1;m Honeypot Probabilty: 30%"
+            print '\033[1;32m[+]\033[1;m Honeypot Probabilty: 30%'
         elif '0.4' in phoney:
-            print "\033[1;32m[+]\033[1;m Honeypot Probabilty: 40%"
+            print '\033[1;32m[+]\033[1;m Honeypot Probabilty: 40%'
         elif '0.5' in phoney:
-            print "\033[1;31m[-]\033[1;m Honeypot Probabilty: 50%"
+            print '\033[1;31m[-]\033[1;m Honeypot Probabilty: 50%'
         elif '0.6' in phoney:
-            print "\033[1;31m[-]\033[1;m Honeypot Probabilty: 60%"
+            print '\033[1;31m[-]\033[1;m Honeypot Probabilty: 60%'
         elif '0.7' in phoney:
-            print "\033[1;31m[-]\033[1;m Honeypot Probabilty: 70%"
+            print '\033[1;31m[-]\033[1;m Honeypot Probabilty: 70%'
         elif '0.8' in phoney:
-            print "\033[1;31m[-]\033[1;m Honeypot Probabilty: 80%"
+            print '\033[1;31m[-]\033[1;m Honeypot Probabilty: 80%'
         elif '0.9' in phoney:
-            print "\033[1;31m[-]\033[1;m Honeypot Probabilty: 90%"
+            print '\033[1;31m[-]\033[1;m Honeypot Probabilty: 90%'
         elif '1.0' in phoney:
-            print "\033[1;31m[-]\033[1;m Honeypot Probabilty: 100%"
+            print '\033[1;31m[-]\033[1;m Honeypot Probabilty: 100%'
     except:
         print '\033[1;31m[-]\033[1;m Honeypot prediction failed'
 
 def nmap(ip_addr):
-    port = "http://api.hackertarget.com/nmap/?q=" + ip_addr
+    port = 'http://api.hackertarget.com/nmap/?q=' + ip_addr
     result = br.open(port).read()
     result = sub(r'Starting[^<]*\)\.', '', result)
     result = sub(r'Service[^<]*seconds', '', result)
@@ -180,7 +180,7 @@ def fingerprint(ip_addr):
         if match:
             print '\033[1;32m[+]\033[1;m Operating System : ' + match.group().split('n&#34;: &#34;')[1][:-5]
     except:
-         pass
+        pass
 
 
 ip_addr = socket.gethostbyname(domain)
@@ -212,13 +212,13 @@ cms(domain)
 honeypot(ip_addr)
 try:
     r = br.open(target + '/robots.txt').read()
-    print "\033[1;31m-\033[1;m" * 40
+    print '\033[1;31m-\033[1;m' * 40
     print '\033[1;32m[+]\033[1;m Robots.txt retrieved\n', r
 except:
     pass
-print"\033[1;31m-\033[1;m" * 40
+print '\033[1;31m-\033[1;m' * 40
 nmap(ip_addr)
-print"\033[1;31m-\033[1;m" * 40
+print '\033[1;31m-\033[1;m' * 40
 dnsdump(domain)
 os.system('cd plugins && python theHarvester.py -d %s -b all' % domain)
 try:
