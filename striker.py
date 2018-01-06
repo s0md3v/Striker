@@ -169,8 +169,7 @@ def dnsdump(domain):
     print '\n\033[1;32m[+]\033[1;m TXT Records'
     for entry in res['dns_records']['txt']:
         print entry
-    print '\n\033[1;32m[+]\033[1;m DNS Map: https://dnsdumpster.com/static/map/%s.png\n' % \
-            domain[4:] if domain.startswith('www.') else domain
+    print '\n\033[1;32m[+]\033[1;m DNS Map: https://dnsdumpster.com/static/map/%s.png\n' % domain.strip('www.')
 
 
 def fingerprint(ip_addr):
