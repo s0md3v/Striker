@@ -132,7 +132,7 @@ def honeypot(ip_addr):
         print '\033[1;31m[-]\033[1;m Honeypot prediction failed'
 
 def whoisIt(url):
-    global who
+    who = ""
     print '{} Trying to gather whois information for {}'.format(run,url)
     try:
         who = str(whois.whois(url)).decode()
