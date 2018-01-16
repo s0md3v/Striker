@@ -11,6 +11,7 @@ Just supply a domain name to <b>Striker</b> and it will automatically do the fol
 - [x] Detect CMS (197+ CMSs are supported)
 - [x] Launch WPScan if target is using Wordpress
 - [x] Retrieve robots.txt
+- [x] Whois lookup
 - [x] Check if the target is a honeypot
 - [x] Port Scan with banner grabbing
 - [x] Dumps all kind of DNS records
