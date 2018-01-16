@@ -146,7 +146,7 @@ def whoisIt(url):
         try:
             data = json.loads(who)
             for key in data.keys():
-                print "    {} :".format(key.replace("_", " ").title()),
+                print "{} :".format(key.replace("_", " ").title()),
                 if type(data[key]) == list:
                     print ", ".join(data[key])
                 else:
