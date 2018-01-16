@@ -8,6 +8,9 @@ import requests
 import os
 from urllib import urlencode
 from plugins.DNSDumpsterAPI import DNSDumpsterAPI
+import whois
+import json
+
 params = []
 # Browser
 br = mechanize.Browser()
@@ -116,33 +119,41 @@ def cms(domain):
         pass
 
 def honeypot(ip_addr):
+    result = {"0.0": 0, "0.1": 10, "0.2": 20, "0.3": 30, "0.4": 40, "0.5": 50, "0.6": 60, "0.7": 70, "0.8": 80, "0.9": 90, "1.0": 10}
     honey = 'https://api.shodan.io/labs/honeyscore/%s?key=C23OXE0bVMrul2YeqcL7zxb6jZ4pj2by' % ip_addr
     try:
         phoney = br.open(honey).read()
-        if '0.0' in phoney:
-            print '%s Honeypot Probabilty: 0%' % good
-        elif '0.1' in phoney:
-            print '%s Honeypot Probabilty: 10%' % good
-        elif '0.2' in phoney:
-            print '%s Honeypot Probabilty: 20%' % good
-        elif '0.3' in phoney:
-            print '%s Honeypot Probabilty: 30%' % good
-        elif '0.4' in phoney:
-            print '%s Honeypot Probabilty: 40%' % good
-        elif '0.5' in phoney:
-            print '%s Honeypot Probabilty: 50%' % bad
-        elif '0.6' in phoney:
-            print '%s Honeypot Probabilty: 60%' % bad
-        elif '0.7' in phoney:
-            print '%s Honeypot Probabilty: 70%' % bad
-        elif '0.8' in phoney:
-            print '%s Honeypot Probabilty: 80%' % bad
-        elif '0.9' in phoney:
-            print '%s Honeypot Probabilty: 90%' % bad
-        elif '1.0' in phoney:
-            print '%s Honeypot Probabilty: 100%' % bad
-    except:
-        print '%s Honeypot prediction failed' % bad
+        if float(phoney) >= 0.0 and float(phoney) <= 0.4:
+            what = good
+        else:
+            what = bad
+        print '{} Honeypot Probabilty: {}%'.format(what, result[phoney])
+    except KeyError:
+        print '\033[1;31m[-]\033[1;m Honeypot prediction failed'
+
+def whoisIt(url):
+    who = ""
+    print '{} Trying to gather whois information for {}'.format(run,url)
+    try:
+        who = str(whois.whois(url)).decode()
+    except Exception:
+        pass
+    test = who.lower()
+    if "whoisguard" in test or "protection" in test or "protected" in test:
+        print '{} Whois Protection Enabled{}'.format(bad, end)
+    else:
+        print '{} Whois information found{}'.format(good, end)
+        try:
+            data = json.loads(who)
+            for key in data.keys():
+                print "{} :".format(key.replace("_", " ").title()),
+                if type(data[key]) == list:
+                    print ", ".join(data[key])
+                else:
+                    print "{}".format(data[key])
+        except ValueError:
+            print '{} Unable to build response, visit https://who.is/whois/{} {}'.format(bad, url, end) 
+    pass
 
 def nmap(ip_addr):
     port = 'http://api.hackertarget.com/nmap/?q=' + ip_addr
@@ -219,6 +230,8 @@ except:
 fingerprint(ip_addr)
 cms(domain)
 honeypot(ip_addr)
+print "{}----------------------------------------{}".format(red, end)
+whoisIt(domain)
 try:
     r = br.open(target + '/robots.txt').read()
     print '\033[1;31m-\033[1;m' * 40
