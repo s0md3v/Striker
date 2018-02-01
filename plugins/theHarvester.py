@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 
 import string
 import httplib
@@ -13,6 +13,11 @@ from discovery import *
 from lib import htmlExport
 from lib import hostchecker
 
+#turn entire script into class and make importable by striker
+#striker.py should use theHarvester as a class not as a os.system/subprocess.Popen process
+
+#make separate script to run theHarvester's code as a standalone unit
+
 def usage():
 
     comm = os.path.basename(sys.argv[0])
@@ -25,6 +30,8 @@ def start(argv):
     if len(sys.argv) < 4:
         sys.exit()
     try:
+        #hmmm, why are there several different unused options, hctefv
+        #instead of getopt use argparse
         opts, args = getopt.getopt(argv, "l:d:b:s:vf:nhcte:")
     except getopt.GetoptError:
         sys.exit()
@@ -61,7 +68,7 @@ def start(argv):
         all_hosts = []
         virtual = "basic"
         print '\033[1;97m[>]\033[1;m Initiating 3 intel modules'
-        
+
         print "\033[1;97m[>]\033[1;m Loading Alpha module (1/3)"
         search = googlesearch.search_google(word, limit, start)
         search.process()

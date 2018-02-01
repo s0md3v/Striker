@@ -1,5 +1,8 @@
 <img src='https://i.imgur.com/MDPLLbV.png' />
 
+#This is a fork of the original Striker
+https://github.com/UltimateHackers/Striker
+
 # Striker
 Striker is an offensive information and vulnerability scanner.
 
