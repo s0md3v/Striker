@@ -43,7 +43,7 @@ class writer:
             file=open(self.logFile,"wb")
             file.write(self.inMemoryLog)
             file.close()
-
+    #to reduce unnecessary code, put the print inside of writeLog, do the logging in the same location
     def writeLog(self,string=b'',ignorePrint=False):
         if ignorePrint == False:
             print string
