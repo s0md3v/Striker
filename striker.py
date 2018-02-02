@@ -19,21 +19,44 @@ import sys
 sys.path.insert(0,str(os.getcwd())+"/plugins")
 #to use the desired plugins system below, we need at a minimum sys and importlib
 import importlib
+#to import plugin information from xml
+import xml.etree.ElementTree as ET
 
 pluginsImport=dict()
 
 class pluggables:
     pluginsImport=dict()
-    plugins={'harvester':'theHarvesterLib'}
+    plugins={}
+    xmlFile="plugins/stricken.xml"
+    ERR_PLUGINS404="xml configuration file '{}' does not exist"
+
+    def getConfig(self):
+        if os.path.exists(os.path.realpath(os.path.expanduser(self.xmlFile))):
+            tree=ET.parse(self.xmlFile)
+            root=tree.getroot()
+            plugins={}
+            for child in root:
+                name=''
+                module=''
+                for childS in child:
+                    if childS.tag == 'name':
+                        name=childS.text
+                    if childS.tag == 'module':
+                        module=childS.text
+                    if ( name != '' or module != '' ) or ( name != '' and module != ''):
+                        self.plugins[name]=module
+        else:
+            sys.exit(self.ERR_PLUGINS404.format(self.xmlFile))
 
     def main(self):
+        self.getConfig()
         for plug in self.plugins.keys():
             self.pluginsImport[plug]=importlib.import_module(self.plugins[plug])
         return self.pluginsImport
 
 initPlugins=pluggables()
 pluginsImport=initPlugins.main()
-#to access your plugin, an entry will be made in pluggables.plugins
+#to access your plugin, an entry will be made in pluggables.plugins which will be retrieved from plugins/stricken.xml
 #then when the dynamic import is complete, your plugin will be available as below,
 #pluginsImport['pluginKey':"module_name"]
 
