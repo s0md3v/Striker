@@ -15,11 +15,27 @@ import subprocess as sp
 import argparse
 import sys
 
-#get theHarvesterLib.py module
+#all pythonic plugins will be placed into /plugins
 sys.path.insert(0,str(os.getcwd())+"/plugins")
-#import theHarvesterLib
-import theHarvesterLib
+#to use the desired plugins system below, we need at a minimum sys and importlib
+import importlib
 
+pluginsImport=dict()
+
+class pluggables:
+    pluginsImport=dict()
+    plugins={'harvester':'theHarvesterLib'}
+
+    def main(self):
+        for plug in self.plugins.keys():
+            self.pluginsImport[plug]=importlib.import_module(self.plugins[plug])
+        return self.pluginsImport
+
+initPlugins=pluggables()
+pluginsImport=initPlugins.main()
+#to access your plugin, an entry will be made in pluggables.plugins
+#then when the dynamic import is complete, your plugin will be available as below,
+#pluginsImport['pluginKey':"module_name"]
 
 class writer:
     inMemoryLog=b''
@@ -337,7 +353,8 @@ logger.writeLog(string.encode())
 dnsdump(domain)
 
 #now theHarvestLib
-harvest=theHarvesterLib.harvester()
+#harvest=theHarvesterLib.harvester()
+harvest=pluginsImport['harvester'].harvester()
 harvest.word=domain
 
 logD=harvest.run()
