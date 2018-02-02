@@ -13,8 +13,14 @@ import json
 import subprocess as sp
 
 import argparse
-#this annoys to me to no end, if you call an interpreter, and it has multiple versions, which are installed at the same time, like python3 and python2,
-#call the interpreter by its name+version
+import sys
+
+#get theHarvesterLib.py module
+sys.path.insert(0,str(os.getcwd())+"/plugins")
+#import theHarvesterLib
+import theHarvesterLib
+
+
 class writer:
     inMemoryLog=b''
     target=''
@@ -329,10 +335,15 @@ nmap(ip_addr)
 string='\033[1;31m-\033[1;m' * 40
 logger.writeLog(string.encode())
 dnsdump(domain)
-#instead of using os.system to execute the below, use subprocess so a record of the output can be made
-data=sp.Popen('cd plugins && python2 theHarvester.py -d {} -b all'.format(domain),shell=True,stdout=sp.PIPE)
-stdout,err=data.communicate()
-logger.writeLog(stdout.encode())
+
+#now theHarvestLib
+harvest=theHarvesterLib.harvester()
+harvest.word=domain
+
+logD=harvest.run()
+#log the data from theHarvesterLib.run()
+for line in logD:
+    logger.writeLog(line,ignorePrint=True)
 
 try:
     br.open(target)
