@@ -17,9 +17,9 @@ import sys
 
 #all pythonic plugins will be placed into /plugins
 sys.path.insert(0,str(os.getcwd())+"/plugins")
-#to use the desired plugins system below, we need at a minimum sys and importlib
+#to use the desired plugins system below, we need at a minimum sys and importlib; since we already have sys
 import importlib
-#to import plugin information from xml
+#to import plugin information from xmlcfg
 import xml.etree.ElementTree as ET
 
 pluginsImport=dict()
@@ -54,32 +54,38 @@ class pluggables:
             self.pluginsImport[plug]=importlib.import_module(self.plugins[plug])
         return self.pluginsImport
 
-initPlugins=pluggables()
-pluginsImport=initPlugins.main()
-#to access your plugin, an entry will be made in pluggables.plugins which will be retrieved from plugins/stricken.xml
-#then when the dynamic import is complete, your plugin will be available as below,
-#pluginsImport['pluginKey':"module_name"]
-
 class writer:
     inMemoryLog=b''
     target=''
     logFile=''
+    pluginsXml=None
+    tell=False
+
+    def prompt(self):
+        if self.tell == True:
+            print '\033[1;34m[!]\033[1;m Target Provided by Cmd-Args: {}'.format(self.target)
+        else:
+            self.target = raw_input('\033[1;34m[?]\033[1;m Enter the target: ')
+
+
     def cmdline(self):
         parser=argparse.ArgumentParser()
         parser.add_argument("-t","--target")
         parser.add_argument("-l","--logfile")
+        parser.add_argument("-p","--plugins-cfg")
         options=parser.parse_args()
 
         if options.target:
             self.target=options.target
-            print '\033[1;34m[!]\033[1;m Target Provided by Cmd-Args: {}'.format(options.target)
-        else:
-            self.target = raw_input('\033[1;34m[?]\033[1;m Enter the target: ')
-
+            self.tell = True
+            
         if options.logfile:
             self.logFile=options.logfile
         else:
             self.logFile=None
+
+        if options.plugins_cfg:
+            self.pluginsXml=options.plugins_cfg
 
         return self.target
 
@@ -96,6 +102,17 @@ class writer:
             self.inMemoryLog+=string+b"\n"
 
 logger=writer()        
+target=logger.cmdline()
+
+initPlugins=pluggables()
+if logger.pluginsXml != None:
+    initPlugins.xmlFile=logger.pluginsXml
+pluginsImport=initPlugins.main()
+
+#to access your plugin, an entry will be made in pluggables.plugins which will be retrieved from plugins/stricken.xml
+#then when the dynamic import is complete, your plugin will be available as below,
+#pluginsImport['pluginKey':"module_name"]
+
 
 params = []
 # Browser
@@ -137,7 +154,7 @@ string='''\033[1;31m
  /_______  /|__|  |__|  |__|__|_ \\\\___  >__|
          \/                     \/    \/\033[1;m'''
 logger.writeLog(string.encode()+"\n".encode())
-target=logger.cmdline()
+logger.prompt()
 logger.writeLog(yellow+b"Target: "+end+target.encode()+"\n".encode(),ignorePrint=True)
 
 if 'http' in target:
