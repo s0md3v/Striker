@@ -10,6 +10,109 @@ from urllib import urlencode
 from plugins.DNSDumpsterAPI import DNSDumpsterAPI
 import whois
 import json
+import subprocess as sp
+
+import argparse
+import sys
+
+#all pythonic plugins will be placed into /plugins
+sys.path.insert(0,str(os.getcwd())+"/plugins")
+#to use the desired plugins system below, we need at a minimum sys and importlib; since we already have sys
+import importlib
+#to import plugin information from xmlcfg
+import xml.etree.ElementTree as ET
+
+pluginsImport=dict()
+
+class pluggables:
+    pluginsImport=dict()
+    plugins={}
+    xmlFile="plugins/stricken.xml"
+    ERR_PLUGINS404="xml configuration file '{}' does not exist"
+
+    def getConfig(self):
+        if os.path.exists(os.path.realpath(os.path.expanduser(self.xmlFile))):
+            tree=ET.parse(self.xmlFile)
+            root=tree.getroot()
+            plugins={}
+            for child in root:
+                name=''
+                module=''
+                for childS in child:
+                    if childS.tag == 'name':
+                        name=childS.text
+                    if childS.tag == 'module':
+                        module=childS.text
+                    if ( name != '' or module != '' ) or ( name != '' and module != ''):
+                        self.plugins[name]=module
+        else:
+            sys.exit(self.ERR_PLUGINS404.format(self.xmlFile))
+
+    def main(self):
+        self.getConfig()
+        for plug in self.plugins.keys():
+            self.pluginsImport[plug]=importlib.import_module(self.plugins[plug])
+        return self.pluginsImport
+
+class writer:
+    inMemoryLog=b''
+    target=''
+    logFile=''
+    pluginsXml=None
+    tell=False
+
+    def prompt(self):
+        if self.tell == True:
+            print '\033[1;34m[!]\033[1;m Target Provided by Cmd-Args: {}'.format(self.target)
+        else:
+            self.target = raw_input('\033[1;34m[?]\033[1;m Enter the target: ')
+
+
+    def cmdline(self):
+        parser=argparse.ArgumentParser()
+        parser.add_argument("-t","--target")
+        parser.add_argument("-l","--logfile")
+        parser.add_argument("-p","--plugins-cfg")
+        options=parser.parse_args()
+
+        if options.target:
+            self.target=options.target
+            self.tell = True
+            
+        if options.logfile:
+            self.logFile=options.logfile
+        else:
+            self.logFile=None
+
+        if options.plugins_cfg:
+            self.pluginsXml=options.plugins_cfg
+
+        return self.target
+
+    def actualWrite(self):
+        if self.logFile != None:
+            file=open(self.logFile,"wb")
+            file.write(self.inMemoryLog)
+            file.close()
+    #to reduce unnecessary code, put the print inside of writeLog, do the logging in the same location
+    def writeLog(self,string=b'',ignorePrint=False):
+        if ignorePrint == False:
+            print string
+        if self.logFile != None:
+            self.inMemoryLog+=string+b"\n"
+
+logger=writer()        
+target=logger.cmdline()
+
+initPlugins=pluggables()
+if logger.pluginsXml != None:
+    initPlugins.xmlFile=logger.pluginsXml
+pluginsImport=initPlugins.main()
+
+#to access your plugin, an entry will be made in pluggables.plugins which will be retrieved from plugins/stricken.xml
+#then when the dynamic import is complete, your plugin will be available as below,
+#pluginsImport['pluginKey':"module_name"]
+
 
 params = []
 # Browser
@@ -43,14 +146,17 @@ br.addheaders = [
     ('User-agent', 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.1) Gecko/2008071615 Fedora/3.0.1-1.fc9 Firefox/3.0.1')]
 
 
-print '''\033[1;31m
+string='''\033[1;31m
    _________ __          __ __
   /   _____//  |________|__|  | __ ___________
   \_____  \\\\   __\_  __ \  |  |/ // __ \_  __ \\
   /        \|  |  |  | \/  |    <\  ___/|  | \/
  /_______  /|__|  |__|  |__|__|_ \\\\___  >__|
          \/                     \/    \/\033[1;m'''
-target = raw_input('\033[1;34m[?]\033[1;m Enter the target: ')
+logger.writeLog(string.encode()+"\n".encode())
+logger.prompt()
+logger.writeLog(yellow+b"Target: "+end+target.encode()+"\n".encode(),ignorePrint=True)
+
 if 'http' in target:
     parsed_uri = urlparse(target)
     domain = '{uri.netloc}'.format(uri=parsed_uri)
@@ -63,7 +169,7 @@ else:
         target = 'https://' + target
 
 def sqli(url):
-    print '%s Using SQLMap api to check for SQL injection vulnerabilities. Don\'t worry we are using an online service and it doesn\'t depend on your internet connection. This scan will take 2-3 minutes.' % run
+    string='{} Using SQLMap api to check for SQL injection vulnerabilities. Don\'t worry we are using an online service and it doesn\'t depend on your internet connection. This scan will take 2-3 minutes.'.format(run)
     br.open('https://suip.biz/?act=sqlmap')
     br.select_form(nr=0)
     br.form['url'] = url
@@ -71,17 +177,22 @@ def sqli(url):
     result = req.read()
     match = search(r"---(?s).*---", result)
     if match:
-        print '%s One or more parameters are vulnerable to SQL injection' % good
+        string='{} One or more parameters are vulnerable to SQL injection'.format(good)
+        logger.writeLog(string.encode())
         option = raw_input(
             '%s Would you like to see the whole report? [Y/n] ' % que).lower()
         if option == 'n':
             pass
         else:
-            print '\033[1;31m-\033[1;m' * 40
-            print match.group().split('---')[1][:-3]
-            print '\033[1;31m-\033[1;m' * 40
+            string='\033[1;31m-\033[1;m' * 40
+            logger.writeLog(string.encode())
+            string=match.group().split('---')[1][:-3]
+            logger.writeLog(string.encode())
+            string='\033[1;31m-\033[1;m' * 40
+            logger.writeLog(string.encode())
     else:
-        print '%s None of parameters is vulnerable to SQL injection' % bad
+        string='%s None of parameters is vulnerable to SQL injection'.format(bad)
+        logger.writeLog(string.encode())
 
 
 def cms(domain):
@@ -96,7 +207,8 @@ def cms(domain):
         except:
             pass
         if detect:
-            print '%s CMS Detected : %s' % (info, detect.group().split('">')[1][:-27])
+            string='{} CMS Detected : {}'.format(info, detect.group().split('">')[1][:-27])
+            logger.writeLog(string.encode())
             detect = detect.group().split('">')[1][:-27]
             if 'WordPress' in detect:
                 option = raw_input(
@@ -104,17 +216,26 @@ def cms(domain):
                 if option == 'n':
                     pass
                 else:
-                    os.system('wpscan --random-agent --url %s' % domain)
+                    data=sp.Popen('wpscan --random-agent --url {}'.format(domain),shell=True,stdout=sp.PIPE)
+                    stdout,stderr=data.communicate()
+                    logger.writeLog(stdout.encode())
+
         elif WordPress:
-            print '%s CMS Detected : WordPress' % info
+            string='{} CMS Detected : WordPress'.format(info)
+            logger.writeLog(string.encode())
             option = raw_input(
                 '%s Would you like to use WPScan? [Y/n] ' % que).lower()
+            #seriously, you should check for y anything else will be ignored
             if option == 'n':
                 pass
             else:
-                os.system('wpscan --random-agent --url %s' % domain)
+                data=sp.Popen('wpscan --random-agent --url {}'.format(domain),shell=True,stdout=sp.PIPE)
+                stdout,stderr=data.communicate()
+                logger.writeLog(stdout.encode())
+
         else:
-            print '%s %s doesn\'t seem to use a CMS' % (info, domain)
+            string='{} {} doesn\'t seem to use a CMS'.format(info, domain)
+            logger.writeLog(string.encode())
     except:
         pass
 
@@ -127,32 +248,41 @@ def honeypot(ip_addr):
             what = good
         else:
             what = bad
-        print '{} Honeypot Probabilty: {}%'.format(what, result[phoney])
+        string='{} Honeypot Probabilty: {}%'.format(what, result[phoney])
+        logger.writeLog(string.encode())
     except KeyError:
-        print '\033[1;31m[-]\033[1;m Honeypot prediction failed'
+        string='\033[1;31m[-]\033[1;m Honeypot prediction failed'
+        logger.writeLog(string.encode())
 
 def whoisIt(url):
     who = ""
-    print '{} Trying to gather whois information for {}'.format(run,url)
+    string='{} Trying to gather whois information for {}'.format(run,url)
+    logger.writeLog(string.encode())
     try:
         who = str(whois.whois(url)).decode()
     except Exception:
         pass
     test = who.lower()
     if "whoisguard" in test or "protection" in test or "protected" in test:
-        print '{} Whois Protection Enabled{}'.format(bad, end)
+        string='{} Whois Protection Enabled{}'.format(bad, end)
+        logger.writeLog(string.encode())
     else:
-        print '{} Whois information found{}'.format(good, end)
+        string='{} Whois information found{}'.format(good, end)
+        logger.writeLog(string.encode())
         try:
             data = json.loads(who)
             for key in data.keys():
-                print "{} :".format(key.replace("_", " ").title()),
+                stringHead="{} :".format(key.replace("_", " ").title())
+                logger.writeLog(''.join(stringHead).encode())
                 if type(data[key]) == list:
-                    print ", ".join(data[key])
+                    string=", ".join(data[key])
                 else:
-                    print "{}".format(data[key])
+                    string="{}".format(data[key])
+                stringTotal=''.join(stringHead)+" "+''.join(string)
+                logger.writeLog(stringTotal)
         except ValueError:
-            print '{} Unable to build response, visit https://who.is/whois/{} {}'.format(bad, url, end) 
+            string='{} Unable to build response, visit https://who.is/whois/{} {}'.format(bad, url, end) 
+            logger.writeLog(string.encode())
     pass
 
 def nmap(ip_addr):
@@ -161,7 +291,7 @@ def nmap(ip_addr):
     result = sub(r'Starting[^<]*\)\.', '', result)
     result = sub(r'Service[^<]*seconds', '', result)
     result = os.linesep.join([s for s in result.splitlines() if s])
-    print result
+    logger.writeLog(result.encode())
 
 def bypass(domain):
     post = urlencode({'cfS': domain})
@@ -171,26 +301,35 @@ def bypass(domain):
     match = search(r' \b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b', result)
     if match:
         bypass.ip_addr = match.group().split(' ')[1][:-1]
-        print '%s Real IP Address : %s' % (good, bypass.ip_addr)
+        string='{} Real IP Address : {}'.format(good, bypass.ip_addr)
+        logger.writeLog(string.encode())
 
 def dnsdump(domain):
     res = DNSDumpsterAPI(False).search(domain)
-    print '\n%s DNS Records' % good
+    string='\n{} DNS Records'.format(good)
+    logger.writeLog(string.encode())
     for entry in res['dns_records']['dns']:
-        print '{domain} ({ip}) {as} {provider} {country}'.format(**entry)
+        string='{domain} ({ip}) {as} {provider} {country}'.format(**entry)
+        logger.writeLog(string.encode())
     for entry in res['dns_records']['mx']:
-        print '\n%s MX Records' % good
-        print '{domain} ({ip}) {as} {provider} {country}'.format(**entry)
-    print '\n\033[1;32m[+]\033[1;m Host Records (A)'
+        string='\n{} MX Records'.format(good)
+        logger.writeLog(string.encode())
+        string='{domain} ({ip}) {as} {provider} {country}'.format(**entry)
+        logger.writeLog(string.encode())
+
+    string='\n\033[1;32m[+]\033[1;m Host Records (A)'
+    logger.writeLog(string.encode())
     for entry in res['dns_records']['host']:
         if entry['reverse_dns']:
-            print '{domain} ({reverse_dns}) ({ip}) {as} {provider} {country}'.format(**entry)
+            string='{domain} ({reverse_dns}) ({ip}) {as} {provider} {country}'.format(**entry)
         else:
-            print '{domain} ({ip}) {as} {provider} {country}'.format(**entry)
-    print '\n%s TXT Records' % good
+            string='{domain} ({ip}) {as} {provider} {country}'.format(**entry)
+        logger.writeLog(string.encode())
+    string='\n{} TXT Records'.format(good)
+    logger.writeLog(string.encode())
     for entry in res['dns_records']['txt']:
-        print entry
-    print '\n%s DNS Map: https://dnsdumpster.com/static/map/%s.png\n' % (good, domain.strip('www.'))
+        logger.writeLog(entry.encode())
+    string='\n{} DNS Map: https://dnsdumpster.com/static/map/{}.png\n'.format(good, domain.strip('www.'))
 
 
 def fingerprint(ip_addr):
@@ -198,54 +337,75 @@ def fingerprint(ip_addr):
         result = br.open('https://www.censys.io/ipv4/%s/raw' % ip_addr).read()
         match = search(r'&#34;os_description&#34;: &#34;[^<]*&#34;', result)
         if match:
-            print '%s Operating System : %s' % (good, match.group().split('n&#34;: &#34;')[1][:-5])
+            string='{} Operating System : {}'.format(good, match.group().split('n&#34;: &#34;')[1][:-5])
     except:
         pass
 
 
 ip_addr = socket.gethostbyname(domain)
-print '%s IP Address : %s' % (info, ip_addr)
+string='{} IP Address : {}'.format(info, ip_addr)
 try:
     r = requests.get(target)
     header = r.headers['Server']
     if 'cloudflare' in header:
-        print '%s Cloudflare detected' % bad
+        string='{} Cloudflare detected'.format(bad)
+        logger.writeLog(string.encode())
+
         bypass(domain)
         try:
             ip_addr = bypass.ip_addr
         except:
             pass
     else:
-        print '%s Server: %s' % (info, header)
+        string='{} Server: {}'.format(info, header)
+        logger.writeLog(string.encode())
     try:
-        print '%s Powered By: %s' % (info, r.headers['X-Powered-By'])
+        string='{} Powered By: {}'.format(info, r.headers['X-Powered-By'])
+        logger.writeLog(string.encode())
     except:
         pass
     try:
         r.headers['X-Frame-Options']
     except:
-        print '%s Clickjacking protection is not in place.' % good
+        string='{} Clickjacking protection is not in place.'.format(good)
+        logger.writeLog(string.encode())
 except:
     pass
 fingerprint(ip_addr)
 cms(domain)
 honeypot(ip_addr)
-print "{}----------------------------------------{}".format(red, end)
+string="{}----------------------------------------{}".format(red, end)
+logger.writeLog(string.encode())
+
 whoisIt(domain)
+
 try:
     r = br.open(target + '/robots.txt').read()
-    print '\033[1;31m-\033[1;m' * 40
-    print '%s Robots.txt retrieved\n' % good, r
+    string='\033[1;31m-\033[1;m' * 40
+    string='{} Robots.txt retrieved\n{}'.format(good,r)
 except:
     pass
-print '\033[1;31m-\033[1;m' * 40
+string='\033[1;31m-\033[1;m' * 40
+logger.writeLog(string.encode())
 nmap(ip_addr)
-print '\033[1;31m-\033[1;m' * 40
+string='\033[1;31m-\033[1;m' * 40
+logger.writeLog(string.encode())
 dnsdump(domain)
-os.system('cd plugins && python theHarvester.py -d %s -b all' % domain)
+
+#now theHarvestLib
+#harvest=theHarvesterLib.harvester()
+harvest=pluginsImport['harvester'].harvester()
+harvest.word=domain
+
+logD=harvest.run()
+#log the data from theHarvesterLib.run()
+for line in logD:
+    logger.writeLog(line,ignorePrint=True)
+
 try:
     br.open(target)
-    print '%s Crawling the target for fuzzable URLs' % run
+    string='{} Crawling the target for fuzzable URLs'.format(run)
+    logger.writeLog(string.encode())
     for link in br.links():
         if 'http' in link.url or '=' not in link.url:
             pass
@@ -253,19 +413,26 @@ try:
             url = target + '/' + link.url
             params.append(url)
     if len(params) == 0:
-        print '%s No fuzzable URLs found' % bad
+        string='{} No fuzzable URLs found'.format(bad)
+        logger.writeLog(string.encode())
         quit()
-    print '%s Found %i fuzzable URLs' % (good, len(params))
+    string='{} Found {} fuzzable URLs'.format(good, len(params))
+    logger.writeLog(string.encode())
+
     for url in params:
-        print url
+        logger.writeLog(url.encode())
         sqli(url)
         url = url.replace('=', '<svg/onload=alert()>')
         r = br.open(url).read()
         if '<svg/onload=alert()>' in r:
-            print '%s One or more parameters are vulnerable to XSS' % good
+            string='{} One or more parameters are vulnerable to XSS'.format(good)
+            logger.writeLog(string.encode())
         break
-    print '%s These are the URLs having parameters:' % good
+    string='{} These are the URLs having parameters:'.format(good)
     for url in params:
-        print url
+        logger.writeLog(url.encode())
 except:
     pass
+
+if logger.logFile != None:
+    logger.actualWrite()

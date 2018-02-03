@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 
 import string
 import httplib
@@ -61,7 +61,7 @@ def start(argv):
         all_hosts = []
         virtual = "basic"
         print '\033[1;97m[>]\033[1;m Initiating 3 intel modules'
-        
+
         print "\033[1;97m[>]\033[1;m Loading Alpha module (1/3)"
         search = googlesearch.search_google(word, limit, start)
         search.process()
