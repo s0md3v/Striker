@@ -23,7 +23,6 @@ class DNSDumpsterAPI(object):
         if self.verbose:
             print('[verbose] %s' % s)
 
-
     def retrieve_results(self, table):
         res = []
         trs = table.findAll('tr')
@@ -56,20 +55,21 @@ class DNSDumpsterAPI(object):
             res.append(td.text)
         return res
 
-
     def search(self, domain):
         dnsdumpster_url = 'https://dnsdumpster.com/'
         s = requests.session()
 
         req = s.get(dnsdumpster_url)
         soup = BeautifulSoup(req.content, 'html.parser')
-        csrf_middleware = soup.findAll('input', attrs={'name': 'csrfmiddlewaretoken'})[0]['value']
+        csrf_middleware = soup.findAll(
+            'input', attrs={'name': 'csrfmiddlewaretoken'})[0]['value']
         self.display_message('Retrieved token: %s' % csrf_middleware)
 
         cookies = {'csrftoken': csrf_middleware}
         headers = {'Referer': dnsdumpster_url}
         data = {'csrfmiddlewaretoken': csrf_middleware, 'targetip': domain}
-        req = s.post(dnsdumpster_url, cookies=cookies, data=data, headers=headers)
+        req = s.post(dnsdumpster_url, cookies=cookies,
+                     data=data, headers=headers)
 
         if req.status_code != 200:
             print(
@@ -107,7 +107,8 @@ class DNSDumpsterAPI(object):
         # XLS hosts.
         # eg. tsebo.com-201606131255.xlsx
         try:
-            pattern = r'https://dnsdumpster.com/static/xls/' + domain + '-[0-9]{12}\.xlsx'
+            pattern = r'https://dnsdumpster.com/static/xls/' + \
+                domain + '-[0-9]{12}\.xlsx'
             xls_url = re.findall(pattern, req.content)[0]
             xls_data = requests.get(xls_url).content.encode('base64')
         except:

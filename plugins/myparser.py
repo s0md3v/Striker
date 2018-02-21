@@ -18,9 +18,8 @@ class parser:
         self.results = re.sub('%3a', ' ', self.results)
         self.results = re.sub('<strong>', '', self.results)
         self.results = re.sub('</strong>', '', self.results)
-        self.results = re.sub('<wbr>','',self.results)
-        self.results = re.sub('</wbr>','',self.results)
-
+        self.results = re.sub('<wbr>', '', self.results)
+        self.results = re.sub('</wbr>', '', self.results)
 
         for e in ('>', ':', '=', '<', '/', '\\', ';', '&', '%3A', '%3D', '%3C'):
             self.results = string.replace(self.results, e, ' ')
@@ -38,7 +37,7 @@ class parser:
         self.genericClean()
         reg_emails = re.compile(
             # Local part is required, charset is flexible
-           # https://tools.ietf.org/html/rfc6531 (removed * and () as they provide FP mostly )
+            # https://tools.ietf.org/html/rfc6531 (removed * and () as they provide FP mostly )
             '[a-zA-Z0-9.\-_+#~!$&\',;=:]+' +
             '@' +
             '[a-zA-Z0-9.-]*' +
@@ -75,8 +74,6 @@ class parser:
             if y != " ":
                 resul.append(y)
         return resul
-
-
 
     def people_twitter(self):
         reg_people = re.compile('(@[a-zA-Z0-9._ -]*)')

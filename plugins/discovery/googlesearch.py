@@ -17,30 +17,32 @@ class search_google:
         self.quantity = "100"
         self.limit = limit
         self.counter = start
-  
+
     def do_search(self):
         try:
-            urly="http://" + self.server + "/search?num=" + self.quantity + "&start=" + str(self.counter) + "&hl=en&meta=&q=%40\"" + self.word + "\""
+            urly = "http://" + self.server + "/search?num=" + self.quantity + \
+                "&start=" + str(self.counter) + \
+                "&hl=en&meta=&q=%40\"" + self.word + "\""
         except Exception, e:
             print e
         try:
-            r=requests.get(urly)
-        except Exception,e:
+            r = requests.get(urly)
+        except Exception, e:
             print e
-        self.results = r.content 
+        self.results = r.content
         self.totalresults += self.results
-
 
     def do_search_profiles(self):
         try:
-            urly="http://" + self.server + "/search?num=" + self.quantity + "&start=" + str(self.counter) + "&hl=en&meta=&q=site:www.google.com%20intitle:\"Google%20Profile\"%20\"Companies%20I%27ve%20worked%20for\"%20\"at%20" + self.word + "\""
+            urly = "http://" + self.server + "/search?num=" + self.quantity + "&start=" + \
+                str(self.counter) + "&hl=en&meta=&q=site:www.google.com%20intitle:\"Google%20Profile\"%20\"Companies%20I%27ve%20worked%20for\"%20\"at%20" + self.word + "\""
         except Exception, e:
             print e
         try:
-            r=requests.get(urly)
-        except Exception,e:
+            r = requests.get(urly)
+        except Exception, e:
             print e
-        self.results = r.content 
+        self.results = r.content
 
         #'&hl=en&meta=&q=site:www.google.com%20intitle:"Google%20Profile"%20"Companies%20I%27ve%20worked%20for"%20"at%20' + self.word + '"')
         self.totalresults += self.results
@@ -68,7 +70,6 @@ class search_google:
             time.sleep(1)
             self.counter += 100
 
-            
     def process_profiles(self):
         while self.counter < self.limit:
             self.do_search_profiles()

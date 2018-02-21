@@ -13,6 +13,7 @@ from discovery import *
 from lib import htmlExport
 from lib import hostchecker
 
+
 def usage():
 
     comm = os.path.basename(sys.argv[0])
@@ -51,7 +52,7 @@ def start(argv):
             virtual = "basic"
         elif opt == '-b':
             engine = arg
-            if engine not in ("baidu", "bing", "crtsh","bingapi","dogpile", "google", "googleCSE","virustotal", "googleplus", "google-profiles","linkedin", "pgp", "twitter", "vhost", "yahoo","netcraft","all"):
+            if engine not in ("baidu", "bing", "crtsh", "bingapi", "dogpile", "google", "googleCSE", "virustotal", "googleplus", "google-profiles", "linkedin", "pgp", "twitter", "vhost", "yahoo", "netcraft", "all"):
                 usage()
                 sys.exit()
             else:
@@ -61,7 +62,6 @@ def start(argv):
         all_hosts = []
         virtual = "basic"
         print '\033[1;97m[>]\033[1;m Initiating 3 intel modules'
-        
         print "\033[1;97m[>]\033[1;m Loading Alpha module (1/3)"
         search = googlesearch.search_google(word, limit, start)
         search.process()
@@ -69,7 +69,7 @@ def start(argv):
         hosts = search.get_hostnames()
         all_emails.extend(emails)
         all_hosts.extend(hosts)
-        
+
         print "\033[1;97m[>]\033[1;m Beta module deployed (2/3)"
         bingapi = "no"
         search = bingsearch.search_bing(word, limit, start)
@@ -78,7 +78,7 @@ def start(argv):
         hosts = search.get_hostnames()
         all_hosts.extend(hosts)
         all_emails.extend(emails)
-       
+
         print "\033[1;97m[>]\033[1;m Gamma module initiated (3/3)"
         search = exaleadsearch.search_exalead(word, limit, start)
         search.process()
@@ -87,8 +87,8 @@ def start(argv):
         all_hosts.extend(hosts)
         all_emails.extend(emails)
 
-        #Clean up email list, sort and uniq
-        all_emails=sorted(set(all_emails))
+        # Clean up email list, sort and uniq
+        all_emails = sorted(set(all_emails))
     #Results############################################################
     if all_emails == []:
         print "No emails found"
@@ -102,7 +102,7 @@ def start(argv):
     else:
         print "\n[+] Hosts found in search engines:"
         print "------------------------------------"
-        all_hosts=sorted(set(all_hosts))
+        all_hosts = sorted(set(all_hosts))
         print "[-] Resolving hostnames IPs... "
         full_host = hostchecker.Checker(all_hosts)
         full = full_host.check()
@@ -123,15 +123,17 @@ def start(argv):
             search.process_vhost()
             res = search.get_allhostnames()
             for x in res:
-                x = re.sub(r'[[\<\/?]*[\w]*>]*','',x)
-                x = re.sub('<','',x)
-                x = re.sub('>','',x)
+                x = re.sub(r'[[\<\/?]*[\w]*>]*', '', x)
+                x = re.sub('<', '', x)
+                x = re.sub('>', '', x)
                 print l + "\t" + x
                 vhost.append(l + ":" + x)
                 full.append(l + ":" + x)
-        vhost=sorted(set(vhost))
+        vhost = sorted(set(vhost))
     else:
         pass
+
+
 if __name__ == "__main__":
     try:
         start(sys.argv[1:])

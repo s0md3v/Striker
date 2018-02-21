@@ -16,7 +16,7 @@ class search_crtsh:
         self.userAgent = "(Mozilla/5.0 (Windows; U; Windows NT 6.0;en-US; rv:1.9.2) Gecko/20100116 Firefox/3.7"
         self.quantity = "100"
         self.counter = 0
-        
+
 
     def do_search(self):
         try:

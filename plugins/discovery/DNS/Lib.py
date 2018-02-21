@@ -43,6 +43,7 @@ class PackError(DNSError):
 
 # Low-level 16 and 32 bit integer packing and unpacking
 
+
 from struct import pack as struct_pack
 from struct import unpack as struct_unpack
 from socket import inet_ntoa, inet_aton
@@ -702,6 +703,7 @@ def dumpRR(u):
     else:
         print '  binary rdata:', u.getbytes(rdlength)
 
+
 if __name__ == "__main__":
     testpacker()
 #
@@ -753,10 +755,10 @@ if __name__ == "__main__":
 # added identifying header to top of each file
 #
 # Revision 1.7  2001/07/19 07:50:44  anthony
-# Added SRV (RFC 2782) support. Code from Michael Ströder.
+# Added SRV (RFC 2782) support. Code from Michael Strï¿½der.
 #
 # Revision 1.6  2001/07/19 07:39:18  anthony
-# 'type' -> 'rrtype' in getRRheader(). Fix from Michael Ströder.
+# 'type' -> 'rrtype' in getRRheader(). Fix from Michael Strï¿½der.
 #
 # Revision 1.5  2001/07/19 07:34:19  anthony
 # oops. glitch in storeRR (fixed now).

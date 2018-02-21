@@ -116,6 +116,7 @@ def RegistryResolve():
     _winreg.CloseKey(x)
     return nameservers
 
+
 if __name__ == "__main__":
     print "Name servers:", RegistryResolve()
 

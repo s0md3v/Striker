@@ -1,19 +1,4 @@
 #!/usr/bin/env python2
-import mechanize
-import socket
-from urlparse import urlparse
-from re import search, sub
-import cookielib
-import requests
-import os
-from urllib import urlencode
-from plugins.DNSDumpsterAPI import DNSDumpsterAPI
-import whois
-import json
-
-params = []
-# Browser
-br = mechanize.Browser()
 
 # Just some colors and shit
 white = '\033[1;97m'
@@ -22,10 +7,33 @@ red = '\033[1;31m'
 yellow = '\033[1;33m'
 end = '\033[1;m'
 info = '\033[1;33m[!]\033[1;m'
-que =  '\033[1;34m[?]\033[1;m'
+que = '\033[1;34m[?]\033[1;m'
 bad = '\033[1;31m[-]\033[1;m'
 good = '\033[1;32m[+]\033[1;m'
 run = '\033[1;97m[~]\033[1;m'
+
+# Import
+try:
+    import os
+    import json
+    import whois
+    import socket
+    import requests
+    import mechanize
+    import cookielib
+    from re import search, sub
+    from urllib import urlencode
+    from urlparse import urlparse
+    from plugins.DNSDumpsterAPI import DNSDumpsterAPI
+except ImportError as e:
+    e = str(e).replace('No module named ', ' ')
+    print(bad + e + ' not installed!')
+    exit(1)
+
+params = []
+
+# Browser
+br = mechanize.Browser()
 
 # Cookie Jar
 cj = cookielib.LWPCookieJar()
@@ -50,7 +58,7 @@ print '''\033[1;31m
   /        \|  |  |  | \/  |    <\  ___/|  | \/
  /_______  /|__|  |__|  |__|__|_ \\\\___  >__|
          \/                     \/    \/\033[1;m'''
-target = raw_input('\033[1;34m[?]\033[1;m Enter the target: ')
+target = raw_input(que + ' Enter the target: ')
 if 'http' in target:
     parsed_uri = urlparse(target)
     domain = '{uri.netloc}'.format(uri=parsed_uri)
@@ -61,6 +69,7 @@ else:
         target = 'http://' + target
     except:
         target = 'https://' + target
+
 
 def sqli(url):
     print '%s Using SQLMap api to check for SQL injection vulnerabilities. Don\'t worry we are using an online service and it doesn\'t depend on your internet connection. This scan will take 2-3 minutes.' % run
@@ -96,7 +105,8 @@ def cms(domain):
         except:
             pass
         if detect:
-            print '%s CMS Detected : %s' % (info, detect.group().split('">')[1][:-27])
+            print '%s CMS Detected : %s' % (
+                info, detect.group().split('">')[1][:-27])
             detect = detect.group().split('">')[1][:-27]
             if 'WordPress' in detect:
                 option = raw_input(
@@ -118,8 +128,10 @@ def cms(domain):
     except:
         pass
 
+
 def honeypot(ip_addr):
-    result = {"0.0": 0, "0.1": 10, "0.2": 20, "0.3": 30, "0.4": 40, "0.5": 50, "0.6": 60, "0.7": 70, "0.8": 80, "0.9": 90, "1.0": 10}
+    result = {"0.0": 0, "0.1": 10, "0.2": 20, "0.3": 30, "0.4": 40,
+              "0.5": 50, "0.6": 60, "0.7": 70, "0.8": 80, "0.9": 90, "1.0": 10}
     honey = 'https://api.shodan.io/labs/honeyscore/%s?key=C23OXE0bVMrul2YeqcL7zxb6jZ4pj2by' % ip_addr
     try:
         phoney = br.open(honey).read()
@@ -131,9 +143,10 @@ def honeypot(ip_addr):
     except KeyError:
         print '\033[1;31m[-]\033[1;m Honeypot prediction failed'
 
+
 def whoisIt(url):
     who = ""
-    print '{} Trying to gather whois information for {}'.format(run,url)
+    print '{} Trying to gather whois information for {}'.format(run, url)
     try:
         who = str(whois.whois(url)).decode()
     except Exception:
@@ -152,8 +165,10 @@ def whoisIt(url):
                 else:
                     print "{}".format(data[key])
         except ValueError:
-            print '{} Unable to build response, visit https://who.is/whois/{} {}'.format(bad, url, end) 
+            print '{} Unable to build response, visit https://who.is/whois/{} {}'.format(
+                bad, url, end)
     pass
+
 
 def nmap(ip_addr):
     port = 'http://api.hackertarget.com/nmap/?q=' + ip_addr
@@ -162,6 +177,7 @@ def nmap(ip_addr):
     result = sub(r'Service[^<]*seconds', '', result)
     result = os.linesep.join([s for s in result.splitlines() if s])
     print result
+
 
 def bypass(domain):
     post = urlencode({'cfS': domain})
@@ -172,6 +188,7 @@ def bypass(domain):
     if match:
         bypass.ip_addr = match.group().split(' ')[1][:-1]
         print '%s Real IP Address : %s' % (good, bypass.ip_addr)
+
 
 def dnsdump(domain):
     res = DNSDumpsterAPI(False).search(domain)
@@ -184,13 +201,15 @@ def dnsdump(domain):
     print '\n\033[1;32m[+]\033[1;m Host Records (A)'
     for entry in res['dns_records']['host']:
         if entry['reverse_dns']:
-            print '{domain} ({reverse_dns}) ({ip}) {as} {provider} {country}'.format(**entry)
+            print '{domain} ({reverse_dns}) ({ip}) {as} {provider} {country}'.format(
+                **entry)
         else:
             print '{domain} ({ip}) {as} {provider} {country}'.format(**entry)
     print '\n%s TXT Records' % good
     for entry in res['dns_records']['txt']:
         print entry
-    print '\n%s DNS Map: https://dnsdumpster.com/static/map/%s.png\n' % (good, domain.strip('www.'))
+    print '\n%s DNS Map: https://dnsdumpster.com/static/map/%s.png\n' % (
+        good, domain.strip('www.'))
 
 
 def fingerprint(ip_addr):
@@ -198,7 +217,8 @@ def fingerprint(ip_addr):
         result = br.open('https://www.censys.io/ipv4/%s/raw' % ip_addr).read()
         match = search(r'&#34;os_description&#34;: &#34;[^<]*&#34;', result)
         if match:
-            print '%s Operating System : %s' % (good, match.group().split('n&#34;: &#34;')[1][:-5])
+            print '%s Operating System : %s' % (
+                good, match.group().split('n&#34;: &#34;')[1][:-5])
     except:
         pass
 

@@ -469,7 +469,7 @@ class IPint:
             ret = self.strFullsize(0)
         elif self._ipversion == 6:
             ret = ':'.join([hex(x)[2:] for x in [int(x, 16)
-                           for x in self.strFullsize(0).split(':')]])
+                                                 for x in self.strFullsize(0).split(':')]])
         else:
             raise ValueError("only IPv4 and IPv6 supported")
 
@@ -1294,6 +1294,7 @@ def _test():
     import doctest
     import IPy
     return doctest.testmod(IPy)
+
 
 if __name__ == "__main__":
     _test()
