@@ -10,10 +10,10 @@ class search_pgp:
         self.word = word
         self.results = ""
         self.server = "pgp.mit.edu"
-        #self.server = "pgp.rediris.es:11371" Not  working at the moment
+        # self.server = "pgp.rediris.es:11371" Not  working at the moment
         self.hostname = "pgp.mit.edu"
         self.userAgent = "(Mozilla/5.0 (Windows; U; Windows NT 6.0;en-US; rv:1.9.2) Gecko/20100115 Firefox/3.6"
-        
+
     def process(self):
         h = httplib.HTTP(self.server)
         h.putrequest('GET', "/pks/lookup?search=" + self.word + "&op=index")

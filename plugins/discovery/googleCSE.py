@@ -21,7 +21,7 @@ class search_googleCSE:
         self.counter = 1
         self.api_key = ""
         self.cse_id = ""
-        self.lowRange = start 
+        self.lowRange = start
         self.highRange = start+100
 
     def do_search(self):
@@ -68,7 +68,7 @@ class search_googleCSE:
         rawres = myparser.parser(self.totalresults, self.word)
         return rawres.fileurls(self.files)
 
-   
+
     def process(self):
         tracker=self.counter + self.lowRange
         while tracker <= self.limit:
@@ -86,7 +86,7 @@ class search_googleCSE:
             else:
                 self.counter += 10
             tracker=self.counter + self.lowRange
-        
+
     def store_results(self):
              filename = "debug_results.txt"
              file = open(filename, 'w')

@@ -16,17 +16,17 @@ class search_netcraft:
         self.userAgent = "(Mozilla/5.0 (Windows; U; Windows NT 6.0;en-US; rv:1.9.2) Gecko/20100116 Firefox/3.7"
         self.quantity = "100"
         self.counter = 0
-        
 
     def do_search(self):
         try:
-            urly="https://searchdns.netcraft.com/?restriction=site+ends+with&host=" + self.word
+            urly = "https://searchdns.netcraft.com/?restriction=site+ends+with&host=" + self.word
         except Exception, e:
             print e
-        headers = {'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:34.0) Gecko/20100101 Firefox/34.0'}
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:34.0) Gecko/20100101 Firefox/34.0'}
         try:
-            r=requests.get(urly,headers=headers)
-        except Exception,e:
+            r = requests.get(urly, headers=headers)
+        except Exception, e:
             print e
         self.results = r.content
         self.totalresults += self.results

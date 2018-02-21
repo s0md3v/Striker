@@ -22,6 +22,7 @@ import asyncore
 class DNSError(Exception):
     pass
 
+
 defaults = {'protocol': 'udp', 'port': 53, 'opcode': Opcode.QUERY,
             'qtype': Type.A, 'rd': 1, 'timing': 1, 'timeout': 30}
 

@@ -19,7 +19,7 @@ Please send bug reports, feature requests, enhancement
 ideas or questions to nogradi at gmail dot com.
 
 Installation: drop markup.py somewhere into your Python path.
-""" % ( __version__, __date__ )
+""" % (__version__, __date__)
 
 import string
 
@@ -399,6 +399,7 @@ class _oneliner:
             raise AttributeError(attr)
         return element(attr, case=self.case, parent=None)
 
+
 oneliner = _oneliner(case='lower')
 upper_oneliner = _oneliner(case='upper')
 
@@ -468,6 +469,7 @@ def escape(text, newline=False):
 
     return text
 
+
 _escape = escape
 
 
@@ -491,6 +493,7 @@ class dummy:
 
     """A dummy class for attaching attributes."""
     pass
+
 
 doctype = dummy()
 doctype.frameset = "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Frameset//EN' 'http://www.w3.org/TR/html4/frameset.dtd'>"
@@ -556,6 +559,7 @@ class CustomizationError(MarkupError):
 
     def __init__(self):
         self.message = "If you customize the allowed elements, you must define both types 'onetags' and 'twotags'."
+
 
 if __name__ == '__main__':
     print __doc__

@@ -35,9 +35,9 @@ class BarGraph:
     """creates horizontal and vertical bar graphs, progress bars and faders"""
 
     def __init__(self, type=''):
-#-------------------------------------------------------------------------
-# Configuration
-#-------------------------------------------------------------------------
+        #-------------------------------------------------------------------------
+        # Configuration
+        #-------------------------------------------------------------------------
         # graph type: "hBar", "vBar", "pBar", or "fader"
         self.type = type and type or 'hBar'
         self.values = []                          # graph data: list
@@ -774,6 +774,7 @@ class BarGraph:
 def _number_format(val, dec):
     """return float with dec decimals; if dec is 0, return integer"""
     return dec and ('%.' + str(dec) + 'f') % val or int(round(val))
+
 
 if __name__ == '__main__':
     print __doc__
