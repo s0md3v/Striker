@@ -229,7 +229,10 @@ except:
     pass
 fingerprint(ip_addr)
 cms(domain)
-honeypot(ip_addr)
+try:
+    honeypot(ip_addr)
+except:
+    pass
 print "{}----------------------------------------{}".format(red, end)
 whoisIt(domain)
 try:
