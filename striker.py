@@ -50,17 +50,10 @@ print '''\033[1;31m
   /        \|  |  |  | \/  |    <\  ___/|  | \/
  /_______  /|__|  |__|  |__|__|_ \\\\___  >__|
          \/                     \/    \/\033[1;m'''
-target = raw_input('\033[1;34m[?]\033[1;m Enter the target: ')
-if 'http' in target:
-    parsed_uri = urlparse(target)
-    domain = '{uri.netloc}'.format(uri=parsed_uri)
-else:
-    domain = target
-    try:
-        br.open('http://' + target)
-        target = 'http://' + target
-    except:
-        target = 'https://' + target
+target_input = raw_input('\033[1;34m[?]\033[1;m Enter the target: ')
+parsed_uri = urlparse(target_input)
+domain = parsed_uri.netloc
+target = '{}//{}'.format(parsed_uri.scheme, parsed_uri.netloc) #detect HTTP or HTTPs By UrlParse
 
 def sqli(url):
     print '%s Using SQLMap api to check for SQL injection vulnerabilities. Don\'t worry we are using an online service and it doesn\'t depend on your internet connection. This scan will take 2-3 minutes.' % run
