@@ -52,7 +52,10 @@ print '''\033[1;31m
          \/                     \/    \/\033[1;m'''
 target_input = raw_input('\033[1;34m[?]\033[1;m Enter the target: ')
 parsed_uri = urlparse(target_input)
-domain = parsed_uri.netloc
+if parsed_uri.scheme == '':
+    domain = parsed_uri.path
+else:
+    domain = parsed_uri.netloc
 target = '{}//{}'.format(parsed_uri.scheme, parsed_uri.netloc) #detect HTTP or HTTPs By UrlParse
 
 def sqli(url):
