@@ -50,12 +50,14 @@ print '''\033[1;31m
   /        \|  |  |  | \/  |    <\  ___/|  | \/
  /_______  /|__|  |__|  |__|__|_ \\\\___  >__|
          \/                     \/    \/\033[1;m'''
-target_input = raw_input('\033[1;34m[?]\033[1;m Enter the target: ')
+target_input = raw_input('\033[1;34m[?]\033[1;m Enter the target: example( http://domain.com ) \n')
 parsed_uri = urlparse(target_input)
+
 if parsed_uri.scheme == '':
     domain = parsed_uri.path
 else:
     domain = parsed_uri.netloc
+
 target = '{}//{}'.format(parsed_uri.scheme, domain) #detect HTTP or HTTPs By UrlParse
 
 def sqli(url):
@@ -86,7 +88,7 @@ def cms(domain):
         detect = search(r'class="nowrap" title="[^<]*">', result)
         WordPress = False
         try:
-            r = br.open(target + '/robots.txt').read()
+            r = br.open('//' + domain + '/robots.txt').read()
             if "wp-admin" in str(r):
                 WordPress = True
         except:
