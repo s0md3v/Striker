@@ -50,7 +50,7 @@ print '''\033[1;31m
   /        \|  |  |  | \/  |    <\  ___/|  | \/
  /_______  /|__|  |__|  |__|__|_ \\\\___  >__|
          \/                     \/    \/\033[1;m'''
-target_input = raw_input('\033[1;34m[?]\033[1;m Enter the target: ')
+target_input = raw_input('\033[1;34m[?]\033[1;m Enter the target(eg. xxx.com): ')
 parsed_uri = urlparse(target_input)
 if parsed_uri.scheme == '':
     domain = parsed_uri.path
@@ -170,8 +170,8 @@ def bypass(domain):
         print '%s Real IP Address : %s' % (good, bypass.ip_addr)
 
 def dnsdump(domain):
-    domain = domain[domain.index('.') + 1:]
-    print '\n Try to get subdomains of %s' % domain
+    # domain = domain[domain.index('.') + 1:]
+    print '{} Trying to gather subdomains information for {}'.format(run, domain)
     res = DNSDumpsterAPI(False).search(domain)
     print '\n%s DNS Records' % good
     for entry in res['dns_records']['dns']:
