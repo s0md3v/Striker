@@ -170,6 +170,8 @@ def bypass(domain):
         print '%s Real IP Address : %s' % (good, bypass.ip_addr)
 
 def dnsdump(domain):
+    domain = domain[domain.index('.') + 1:]
+    print '\n Try to get subdomains of %s' % domain
     res = DNSDumpsterAPI(False).search(domain)
     print '\n%s DNS Records' % good
     for entry in res['dns_records']['dns']:
