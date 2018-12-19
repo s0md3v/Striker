@@ -56,7 +56,7 @@ if parsed_uri.scheme == '':
     domain = parsed_uri.path
 else:
     domain = parsed_uri.netloc
-target = '{}//{}'.format(parsed_uri.scheme, parsed_uri.netloc) #detect HTTP or HTTPs By UrlParse
+target = '{}//{}'.format(parsed_uri.scheme, domain) #detect HTTP or HTTPs By UrlParse
 
 def sqli(url):
     print '%s Using SQLMap api to check for SQL injection vulnerabilities. Don\'t worry we are using an online service and it doesn\'t depend on your internet connection. This scan will take 2-3 minutes.' % run
