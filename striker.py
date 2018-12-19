@@ -50,6 +50,13 @@ print '''\033[1;31m
   /        \|  |  |  | \/  |    <\  ___/|  | \/
  /_______  /|__|  |__|  |__|__|_ \\\\___  >__|
          \/                     \/    \/\033[1;m'''
+print '''
+The target format should be:
+1. http://www.xxx.com
+2. https://www.xxx.com
+3. www.xxx.com
+4. xxx.com
+'''
 target_input = raw_input('\033[1;34m[?]\033[1;m Enter the target(eg. xxx.com): ')
 parsed_uri = urlparse(target_input)
 if parsed_uri.scheme == '':
@@ -170,8 +177,9 @@ def bypass(domain):
         print '%s Real IP Address : %s' % (good, bypass.ip_addr)
 
 def dnsdump(domain):
-    # domain = domain[domain.index('.') + 1:]
     print '{} Trying to gather subdomains information for {}'.format(run, domain)
+    if domain.count('.') >1:
+        domain = domain[domain.index('.') + 1:]
     res = DNSDumpsterAPI(False).search(domain)
     print '\n%s DNS Records' % good
     for entry in res['dns_records']['dns']:
