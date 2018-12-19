@@ -79,7 +79,7 @@ class DNSDumpsterAPI(object):
             )
             return []
 
-        if 'error' in req.content.decode('utf-8'):
+        if 'There was an error getting results.' in req.content.decode('utf-8'):
             print("There was an error getting results", file=sys.stderr)
             return []
 
