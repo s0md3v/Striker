@@ -6,9 +6,8 @@ import re
 
 
 class search_ask:
-
     def __init__(self, word, limit):
-        self.word = word.replace(' ', '%20')
+        self.word = word.replace(" ", "%20")
         self.results = ""
         self.totalresults = ""
         self.server = "www.ask.com"
@@ -20,20 +19,15 @@ class search_ask:
 
     def do_search(self):
         h = httplib.HTTP(self.server)
-        h.putrequest(
-            'GET',
-            "/web?q=%40" +
-            self.word +
-            "&pu=100&page=" +
-            self.counter)
-        h.putheader('User-agent', self.userAgent)
+        h.putrequest("GET", "/web?q=%40" + self.word + "&pu=100&page=" + self.counter)
+        h.putheader("User-agent", self.userAgent)
         h.endheaders()
         returncode, returnmsg, headers = h.getreply()
         self.results = h.getfile().read()
         self.totalresults += self.results
 
     def check_next(self):
-        renext = re.compile('>  Next  <')
+        renext = re.compile(">  Next  <")
         nextres = renext.findall(self.results)
         if nextres != []:
             nexty = "1"
@@ -46,7 +40,7 @@ class search_ask:
         return rawres.people_jigsaw()
 
     def process(self):
-        while (self.counter < self.limit):
+        while self.counter < self.limit:
             self.do_search()
             more = self.check_next()
             if more == "1":

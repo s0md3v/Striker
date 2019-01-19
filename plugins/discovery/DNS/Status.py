@@ -33,7 +33,7 @@ BADALG = 21  # Algorithm not supported            [RFC 2930]
 _names = dir()
 statusmap = {}
 for _name in _names:
-    if _name[0] != '_':
+    if _name[0] != "_":
         statusmap[eval(_name)] = _name
 
 
@@ -42,6 +42,7 @@ def statusstr(status):
         return statusmap[status]
     else:
         return repr(status)
+
 
 #
 # $Log: Status.py,v $

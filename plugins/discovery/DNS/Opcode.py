@@ -21,7 +21,7 @@ UPDATE = 5
 _names = dir()
 opcodemap = {}
 for _name in _names:
-    if _name[0] != '_':
+    if _name[0] != "_":
         opcodemap[eval(_name)] = _name
 
 
@@ -30,6 +30,7 @@ def opcodestr(opcode):
         return opcodemap[opcode]
     else:
         return repr(opcode)
+
 
 #
 # $Log: Opcode.py,v $

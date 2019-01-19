@@ -2,8 +2,7 @@ from shodan import WebAPI
 import sys
 
 
-class search_shodan():
-
+class search_shodan:
     def __init__(self, host):
         self.host = host
         self.key = "oCiMsgM6rQWqiTvPxFHYcExlZgg7wvTt"
@@ -15,7 +14,7 @@ class search_shodan():
     def run(self):
         try:
             host = self.api.host(self.host)
-            return host['data']
+            return host["data"]
         except:
             print "SHODAN empty reply or error in the call"
             return "error"

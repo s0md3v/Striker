@@ -7,7 +7,6 @@ import time
 
 
 class search_yandex:
-
     def __init__(self, word, limit, start):
         self.word = word
         self.results = ""
@@ -20,10 +19,11 @@ class search_yandex:
 
     def do_search(self):
         h = httplib.HTTP(self.server)
-        h.putrequest('GET', "/search?text=%40" + self.word +
-                     "&numdoc=50&lr=" + str(self.counter))
-        h.putheader('Host', self.hostname)
-        h.putheader('User-agent', self.userAgent)
+        h.putrequest(
+            "GET", "/search?text=%40" + self.word + "&numdoc=50&lr=" + str(self.counter)
+        )
+        h.putheader("Host", self.hostname)
+        h.putheader("User-agent", self.userAgent)
         h.endheaders()
         returncode, returnmsg, headers = h.getreply()
         self.results = h.getfile().read()
@@ -32,17 +32,18 @@ class search_yandex:
 
     def do_search_files(self, files):  # TODO
         h = httplib.HTTP(self.server)
-        h.putrequest('GET', "/search?text=%40" + self.word +
-                     "&numdoc=50&lr=" + str(self.counter))
-        h.putheader('Host', self.hostname)
-        h.putheader('User-agent', self.userAgent)
+        h.putrequest(
+            "GET", "/search?text=%40" + self.word + "&numdoc=50&lr=" + str(self.counter)
+        )
+        h.putheader("Host", self.hostname)
+        h.putheader("User-agent", self.userAgent)
         h.endheaders()
         returncode, returnmsg, headers = h.getreply()
         self.results = h.getfile().read()
         self.totalresults += self.results
 
     def check_next(self):
-        renext = re.compile('topNextUrl')
+        renext = re.compile("topNextUrl")
         nextres = renext.findall(self.results)
         if nextres != []:
             nexty = "1"

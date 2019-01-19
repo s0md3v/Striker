@@ -5,32 +5,31 @@ import socket
 import sys
 
 
-class dns_reverse():
-
+class dns_reverse:
     def __init__(self, range, verbose=True):
         self.range = range
-        self.iplist = ''
+        self.iplist = ""
         self.results = []
         self.verbose = verbose
         try:
             DNS.ParseResolvConf("/etc/resolv.conf")
-            nameserver = DNS.defaults['server'][0]
+            nameserver = DNS.defaults["server"][0]
         except:
             print "Error in DNS resolvers"
             sys.exit()
 
     def run(self, host):
-        a = string.split(host, '.')
+        a = string.split(host, ".")
         a.reverse()
-        b = string.join(a, '.') + '.in-addr.arpa'
-        nameserver = DNS.defaults['server'][0]
+        b = string.join(a, ".") + ".in-addr.arpa"
+        nameserver = DNS.defaults["server"][0]
         if self.verbose:
             ESC = chr(27)
-            sys.stdout.write(ESC + '[2K' + ESC + '[G')
+            sys.stdout.write(ESC + "[2K" + ESC + "[G")
             sys.stdout.write("\r" + host)
             sys.stdout.flush()
         try:
-            name = DNS.Base.DnsRequest(b, qtype='ptr').req().answers[0]['data']
+            name = DNS.Base.DnsRequest(b, qtype="ptr").req().answers[0]["data"]
             return host + ":" + name
         except:
             pass
@@ -59,8 +58,7 @@ class dns_reverse():
         return self.results
 
 
-class dns_force():
-
+class dns_force:
     def __init__(self, domain, dnsserver, verbose=False):
         self.domain = domain
         self.server = dnsserver
@@ -76,7 +74,7 @@ class dns_force():
 
     def getdns(self, domain):
         DNS.ParseResolvConf("/etc/resolv.conf")
-        nameserver = DNS.defaults['server'][0]
+        nameserver = DNS.defaults["server"][0]
         dom = domain
         if self.subdo == True:
             dom = domain.split(".")
@@ -85,14 +83,15 @@ class dns_force():
         else:
             rootdom = dom
         if self.server == False:
-            r = DNS.Request(rootdom, qtype='SOA').req()
-            primary, email, serial, refresh, retry, expire, minimum = r.answers[
-                0]['data']
-            test = DNS.Request(rootdom, qtype='NS', server=primary, aa=1).req()
-        if test.header['status'] != "NOERROR":
+            r = DNS.Request(rootdom, qtype="SOA").req()
+            primary, email, serial, refresh, retry, expire, minimum = r.answers[0][
+                "data"
+            ]
+            test = DNS.Request(rootdom, qtype="NS", server=primary, aa=1).req()
+        if test.header["status"] != "NOERROR":
             print "Error"
             sys.exit()
-        self.nameserver = test.answers[0]['data']
+        self.nameserver = test.answers[0]["data"]
         return self.nameserver
 
     def run(self, host):
@@ -101,16 +100,12 @@ class dns_force():
         # nameserver=DNS.defaults['server'][0]
         if self.verbose:
             ESC = chr(27)
-            sys.stdout.write(ESC + '[2K' + ESC + '[G')
+            sys.stdout.write(ESC + "[2K" + ESC + "[G")
             sys.stdout.write("\r" + hostname)
             sys.stdout.flush()
         try:
-            test = DNS.Request(
-                hostname,
-                qtype='a',
-                server=self.nameserver).req(
-            )
-            hostip = test.answers[0]['data']
+            test = DNS.Request(hostname, qtype="a", server=self.nameserver).req()
+            hostip = test.answers[0]["data"]
             return hostip + ":" + hostname
         except Exception as e:
             pass

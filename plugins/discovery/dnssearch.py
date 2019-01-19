@@ -5,32 +5,31 @@ import socket
 import sys
 
 
-class dns_reverse():
-
+class dns_reverse:
     def __init__(self, range, verbose=True):
         self.range = range
-        self.iplist = ''
+        self.iplist = ""
         self.results = []
         self.verbose = verbose
         try:
             DNS.ParseResolvConf("/etc/resolv.conf")
-            nameserver = DNS.defaults['server'][0]
+            nameserver = DNS.defaults["server"][0]
         except:
             print "Error in DNS resolvers"
             sys.exit()
 
     def run(self, host):
-        a = string.split(host, '.')
+        a = string.split(host, ".")
         a.reverse()
-        b = string.join(a, '.') + '.in-addr.arpa'
-        nameserver = DNS.defaults['server'][0]
+        b = string.join(a, ".") + ".in-addr.arpa"
+        nameserver = DNS.defaults["server"][0]
         if self.verbose:
             ESC = chr(27)
-            sys.stdout.write(ESC + '[2K' + ESC + '[G')
+            sys.stdout.write(ESC + "[2K" + ESC + "[G")
             sys.stdout.write("\r\t" + host)
             sys.stdout.flush()
         try:
-            name = DNS.Base.DnsRequest(b, qtype='ptr').req().answers[0]['data']
+            name = DNS.Base.DnsRequest(b, qtype="ptr").req().answers[0]["data"]
             return host + ":" + name
         except:
             pass
@@ -59,8 +58,7 @@ class dns_reverse():
         return self.results
 
 
-class dns_force():
-
+class dns_force:
     def __init__(self, domain, dnsserver, verbose=False):
         self.domain = domain
         self.nameserver = dnsserver
@@ -76,7 +74,7 @@ class dns_force():
 
     def getdns(self, domain):
         DNS.ParseResolvConf("/etc/resolv.conf")
-        nameserver=DNS.defaults['server'][0]
+        nameserver = DNS.defaults["server"][0]
         dom = domain
         if self.subdo == True:
             dom = domain.split(".")
@@ -86,21 +84,18 @@ class dns_force():
             rootdom = dom
         if self.nameserver == "":
             try:
-                r = DNS.Request(rootdom, qtype='SOA').req()
-                primary, email, serial, refresh, retry, expire, minimum = r.answers[
-                    0]['data']
-                test = DNS.Request(
-                    rootdom,
-                    qtype='NS',
-                    server=primary,
-                    aa=1).req()
+                r = DNS.Request(rootdom, qtype="SOA").req()
+                primary, email, serial, refresh, retry, expire, minimum = r.answers[0][
+                    "data"
+                ]
+                test = DNS.Request(rootdom, qtype="NS", server=primary, aa=1).req()
             except Exception as e:
                 print e
 
-            if test.header['status'] != "NOERROR":
+            if test.header["status"] != "NOERROR":
                 print "Error"
                 sys.exit()
-            self.nameserver = test.answers[0]['data']
+            self.nameserver = test.answers[0]["data"]
         elif self.nameserver == "local":
             self.nameserver = nameserver
         return self.nameserver
@@ -113,16 +108,12 @@ class dns_force():
         hostname = str(host.split("\n")[0]) + "." + str(self.domain)
         if self.verbose:
             ESC = chr(27)
-            sys.stdout.write(ESC + '[2K' + ESC + '[G')
+            sys.stdout.write(ESC + "[2K" + ESC + "[G")
             sys.stdout.write("\r" + hostname)
             sys.stdout.flush()
         try:
-            test = DNS.Request(
-                hostname,
-                qtype='a',
-                server=self.nameserver).req(
-            )
-            hostip = test.answers[0]['data']
+            test = DNS.Request(hostname, qtype="a", server=self.nameserver).req()
+            hostip = test.answers[0]["data"]
             return hostip + ":" + hostname
         except Exception as e:
             pass
@@ -136,8 +127,7 @@ class dns_force():
         return results
 
 
-class dns_tld():
-
+class dns_tld:
     def __init__(self, domain, dnsserver, verbose=False):
         self.domain = domain
         self.nameserver = dnsserver
@@ -145,30 +135,350 @@ class dns_tld():
         self.verbose = verbose
         # Updated from http://data.iana.org/TLD/tlds-alpha-by-domain.txt
         self.tlds = [
-            "ac", "academy", "ad", "ae", "aero", "af", "ag", "ai", "al", "am", "an", "ao", "aq", "ar", "arpa", "as",
-            "asia", "at", "au", "aw", "ax", "az", "ba", "bb", "bd", "be", "bf", "bg", "bh", "bi", "bike", "biz", "bj",
-            "bm", "bn", "bo", "br", "bs", "bt", "builders", "buzz", "bv", "bw", "by", "bz", "ca", "cab", "camera",
-            "camp", "careers", "cat", "cc", "cd", "center", "ceo", "cf", "cg", "ch", "ci", "ck", "cl", "clothing",
-            "cm", "cn", "co", "codes", "coffee", "com", "company", "computer", "construction", "contractors", "coop",
-            "cr", "cu", "cv", "cw", "cx", "cy", "cz", "de", "diamonds", "directory", "dj", "dk", "dm", "do",
-            "domains", "dz", "ec", "edu", "education", "ee", "eg", "email", "enterprises", "equipment", "er", "es",
-            "estate", "et", "eu", "farm", "fi", "fj", "fk", "florist", "fm", "fo", "fr", "ga", "gallery", "gb", "gd",
-            "ge", "gf", "gg", "gh", "gi", "gl", "glass", "gm", "gn", "gov", "gp", "gq", "gr", "graphics", "gs", "gt",
-            "gu", "guru", "gw", "gy", "hk", "hm", "hn", "holdings", "holiday", "house", "hr", "ht", "hu", "id", "ie",
-            "il", "im", "immobilien", "in", "info", "institute", "int", "international", "io", "iq", "ir", "is", "it",
-            "je", "jm", "jo", "jobs", "jp", "kaufen", "ke", "kg", "kh", "ki", "kitchen", "kiwi", "km", "kn", "kp",
-            "kr", "kw", "ky", "kz", "la", "land", "lb", "lc", "li", "lighting", "limo", "lk", "lr", "ls", "lt", "lu",
-            "lv", "ly", "ma", "management", "mc", "md", "me", "menu", "mg", "mh", "mil", "mk", "ml", "mm", "mn", "mo",
-            "mobi", "mp", "mq", "mr", "ms", "mt", "mu", "museum", "mv", "mw", "mx", "my", "mz", "na", "name", "nc",
-            "ne", "net", "nf", "ng", "ni", "ninja", "nl", "no", "np", "nr", "nu", "nz", "om", "onl", "org", "pa", "pe",
-            "pf", "pg", "ph", "photography", "photos", "pk", "pl", "plumbing", "pm", "pn", "post", "pr", "pro", "ps",
-            "pt", "pw", "py", "qa", "re", "recipes", "repair", "ro", "rs", "ru", "ruhr", "rw", "sa", "sb", "sc", "sd",
-            "se", "sexy", "sg", "sh", "shoes", "si", "singles", "sj", "sk", "sl", "sm", "sn", "so", "solar",
-            "solutions", "sr", "st", "su", "support", "sv", "sx", "sy", "systems", "sz", "tattoo", "tc", "td",
-            "technology", "tel", "tf", "tg", "th", "tips", "tj", "tk", "tl", "tm", "tn", "to", "today", "tp", "tr",
-            "training", "travel", "tt", "tv", "tw", "tz", "ua", "ug", "uk", "uno", "us", "uy", "uz", "va", "vc",
-            "ve", "ventures", "vg", "vi", "viajes", "vn", "voyage", "vu", "wang", "wf", "wien", "ws", "xxx", "ye",
-            "yt", "za", "zm", "zw"]
+            "ac",
+            "academy",
+            "ad",
+            "ae",
+            "aero",
+            "af",
+            "ag",
+            "ai",
+            "al",
+            "am",
+            "an",
+            "ao",
+            "aq",
+            "ar",
+            "arpa",
+            "as",
+            "asia",
+            "at",
+            "au",
+            "aw",
+            "ax",
+            "az",
+            "ba",
+            "bb",
+            "bd",
+            "be",
+            "bf",
+            "bg",
+            "bh",
+            "bi",
+            "bike",
+            "biz",
+            "bj",
+            "bm",
+            "bn",
+            "bo",
+            "br",
+            "bs",
+            "bt",
+            "builders",
+            "buzz",
+            "bv",
+            "bw",
+            "by",
+            "bz",
+            "ca",
+            "cab",
+            "camera",
+            "camp",
+            "careers",
+            "cat",
+            "cc",
+            "cd",
+            "center",
+            "ceo",
+            "cf",
+            "cg",
+            "ch",
+            "ci",
+            "ck",
+            "cl",
+            "clothing",
+            "cm",
+            "cn",
+            "co",
+            "codes",
+            "coffee",
+            "com",
+            "company",
+            "computer",
+            "construction",
+            "contractors",
+            "coop",
+            "cr",
+            "cu",
+            "cv",
+            "cw",
+            "cx",
+            "cy",
+            "cz",
+            "de",
+            "diamonds",
+            "directory",
+            "dj",
+            "dk",
+            "dm",
+            "do",
+            "domains",
+            "dz",
+            "ec",
+            "edu",
+            "education",
+            "ee",
+            "eg",
+            "email",
+            "enterprises",
+            "equipment",
+            "er",
+            "es",
+            "estate",
+            "et",
+            "eu",
+            "farm",
+            "fi",
+            "fj",
+            "fk",
+            "florist",
+            "fm",
+            "fo",
+            "fr",
+            "ga",
+            "gallery",
+            "gb",
+            "gd",
+            "ge",
+            "gf",
+            "gg",
+            "gh",
+            "gi",
+            "gl",
+            "glass",
+            "gm",
+            "gn",
+            "gov",
+            "gp",
+            "gq",
+            "gr",
+            "graphics",
+            "gs",
+            "gt",
+            "gu",
+            "guru",
+            "gw",
+            "gy",
+            "hk",
+            "hm",
+            "hn",
+            "holdings",
+            "holiday",
+            "house",
+            "hr",
+            "ht",
+            "hu",
+            "id",
+            "ie",
+            "il",
+            "im",
+            "immobilien",
+            "in",
+            "info",
+            "institute",
+            "int",
+            "international",
+            "io",
+            "iq",
+            "ir",
+            "is",
+            "it",
+            "je",
+            "jm",
+            "jo",
+            "jobs",
+            "jp",
+            "kaufen",
+            "ke",
+            "kg",
+            "kh",
+            "ki",
+            "kitchen",
+            "kiwi",
+            "km",
+            "kn",
+            "kp",
+            "kr",
+            "kw",
+            "ky",
+            "kz",
+            "la",
+            "land",
+            "lb",
+            "lc",
+            "li",
+            "lighting",
+            "limo",
+            "lk",
+            "lr",
+            "ls",
+            "lt",
+            "lu",
+            "lv",
+            "ly",
+            "ma",
+            "management",
+            "mc",
+            "md",
+            "me",
+            "menu",
+            "mg",
+            "mh",
+            "mil",
+            "mk",
+            "ml",
+            "mm",
+            "mn",
+            "mo",
+            "mobi",
+            "mp",
+            "mq",
+            "mr",
+            "ms",
+            "mt",
+            "mu",
+            "museum",
+            "mv",
+            "mw",
+            "mx",
+            "my",
+            "mz",
+            "na",
+            "name",
+            "nc",
+            "ne",
+            "net",
+            "nf",
+            "ng",
+            "ni",
+            "ninja",
+            "nl",
+            "no",
+            "np",
+            "nr",
+            "nu",
+            "nz",
+            "om",
+            "onl",
+            "org",
+            "pa",
+            "pe",
+            "pf",
+            "pg",
+            "ph",
+            "photography",
+            "photos",
+            "pk",
+            "pl",
+            "plumbing",
+            "pm",
+            "pn",
+            "post",
+            "pr",
+            "pro",
+            "ps",
+            "pt",
+            "pw",
+            "py",
+            "qa",
+            "re",
+            "recipes",
+            "repair",
+            "ro",
+            "rs",
+            "ru",
+            "ruhr",
+            "rw",
+            "sa",
+            "sb",
+            "sc",
+            "sd",
+            "se",
+            "sexy",
+            "sg",
+            "sh",
+            "shoes",
+            "si",
+            "singles",
+            "sj",
+            "sk",
+            "sl",
+            "sm",
+            "sn",
+            "so",
+            "solar",
+            "solutions",
+            "sr",
+            "st",
+            "su",
+            "support",
+            "sv",
+            "sx",
+            "sy",
+            "systems",
+            "sz",
+            "tattoo",
+            "tc",
+            "td",
+            "technology",
+            "tel",
+            "tf",
+            "tg",
+            "th",
+            "tips",
+            "tj",
+            "tk",
+            "tl",
+            "tm",
+            "tn",
+            "to",
+            "today",
+            "tp",
+            "tr",
+            "training",
+            "travel",
+            "tt",
+            "tv",
+            "tw",
+            "tz",
+            "ua",
+            "ug",
+            "uk",
+            "uno",
+            "us",
+            "uy",
+            "uz",
+            "va",
+            "vc",
+            "ve",
+            "ventures",
+            "vg",
+            "vi",
+            "viajes",
+            "vn",
+            "voyage",
+            "vu",
+            "wang",
+            "wf",
+            "wien",
+            "ws",
+            "xxx",
+            "ye",
+            "yt",
+            "za",
+            "zm",
+            "zw",
+        ]
 
     def getdns(self, domain):
         # DNS.ParseResolvConf("/etc/resolv.conf")
@@ -181,14 +491,15 @@ class dns_tld():
         else:
             rootdom = dom
         if self.nameserver == False:
-            r = DNS.Request(rootdom, qtype='SOA').req()
-            primary, email, serial, refresh, retry, expire, minimum = r.answers[
-                0]['data']
-            test = DNS.Request(rootdom, qtype='NS', server=primary, aa=1).req()
-            if test.header['status'] != "NOERROR":
+            r = DNS.Request(rootdom, qtype="SOA").req()
+            primary, email, serial, refresh, retry, expire, minimum = r.answers[0][
+                "data"
+            ]
+            test = DNS.Request(rootdom, qtype="NS", server=primary, aa=1).req()
+            if test.header["status"] != "NOERROR":
                 print "Error"
                 sys.exit()
-            self.nameserver = test.answers[0]['data']
+            self.nameserver = test.answers[0]["data"]
         elif self.nameserver == "local":
             self.nameserver = nameserver
         return self.nameserver
@@ -198,16 +509,12 @@ class dns_tld():
         hostname = self.domain.split(".")[0] + "." + tld
         if self.verbose:
             ESC = chr(27)
-            sys.stdout.write(ESC + '[2K' + ESC + '[G')
+            sys.stdout.write(ESC + "[2K" + ESC + "[G")
             sys.stdout.write("\r\tSearching for: " + hostname)
             sys.stdout.flush()
         try:
-            test = DNS.Request(
-                hostname,
-                qtype='a',
-                server=self.nameserver).req(
-            )
-            hostip = test.answers[0]['data']
+            test = DNS.Request(hostname, qtype="a", server=self.nameserver).req()
+            hostip = test.answers[0]["data"]
             return hostip + ":" + hostname
         except Exception as e:
             pass

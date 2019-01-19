@@ -6,9 +6,8 @@ import re
 
 
 class search_googleplus:
-
     def __init__(self, word, limit):
-        self.word = word.replace(' ', '%20')
+        self.word = word.replace(" ", "%20")
         self.results = ""
         self.totalresults = ""
         self.server = "www.google.com"
@@ -20,13 +19,23 @@ class search_googleplus:
 
     def do_search(self):
         try:
-            urly="https://" + self.server + "/search?num=100&start=" + str(self.counter) + "&hl=en&meta=&q=site%3Aplus.google.com%20intext%3A%22Works%20at%22%20" + self.word+ "%20-inurl%3Aphotos%20-inurl%3Aabout%20-inurl%3Aposts%20-inurl%3Aplusones"
+            urly = (
+                "https://"
+                + self.server
+                + "/search?num=100&start="
+                + str(self.counter)
+                + "&hl=en&meta=&q=site%3Aplus.google.com%20intext%3A%22Works%20at%22%20"
+                + self.word
+                + "%20-inurl%3Aphotos%20-inurl%3Aabout%20-inurl%3Aposts%20-inurl%3Aplusones"
+            )
         except Exception, e:
             print e
         try:
-            headers = {'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:34.0) Gecko/20100101 Firefox/34.0'}
-            r=requests.get(urly,headers=headers)
-        except Exception,e:
+            headers = {
+                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:34.0) Gecko/20100101 Firefox/34.0"
+            }
+            r = requests.get(urly, headers=headers)
+        except Exception, e:
             print e
         self.results = r.content
         self.totalresults += self.results
@@ -36,7 +45,7 @@ class search_googleplus:
         return rawres.people_googleplus()
 
     def process(self):
-        while (self.counter < self.limit):
+        while self.counter < self.limit:
             self.do_search()
             self.counter += 100
             print "\tSearching " + str(self.counter) + " results.."

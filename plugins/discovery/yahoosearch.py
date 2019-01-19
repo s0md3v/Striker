@@ -5,7 +5,6 @@ import sys
 
 
 class search_yahoo:
-
     def __init__(self, word, limit):
         self.word = word
         self.total_results = ""
@@ -18,10 +17,11 @@ class search_yahoo:
     def do_search(self):
         h = httplib.HTTP(self.server)
 
-        h.putrequest('GET', "/search?p=\"%40" + self.word
-                     + "\"&b=" + str(self.counter) + "&pz=10")
-        h.putheader('Host', self.hostname)
-        h.putheader('User-agent', self.userAgent)
+        h.putrequest(
+            "GET", '/search?p="%40' + self.word + '"&b=' + str(self.counter) + "&pz=10"
+        )
+        h.putheader("Host", self.hostname)
+        h.putheader("User-agent", self.userAgent)
         h.endheaders()
         returncode, returnmsg, headers = h.getreply()
 

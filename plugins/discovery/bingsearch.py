@@ -7,9 +7,8 @@ import time
 
 
 class search_bing:
-
     def __init__(self, word, limit, start):
-        self.word = word.replace(' ', '%20')
+        self.word = word.replace(" ", "%20")
         self.results = ""
         self.totalresults = ""
         self.server = "www.bing.com"
@@ -23,12 +22,13 @@ class search_bing:
 
     def do_search(self):
         h = httplib.HTTP(self.server)
-        h.putrequest('GET', "/search?q=%40" + self.word +
-                     "&count=50&first=" + str(self.counter))
-        h.putheader('Host', self.hostname)
-        h.putheader('Cookie', 'SRCHHPGUSR=ADLT=DEMOTE&NRSLT=50')
-        h.putheader('Accept-Language', 'en-us,en')
-        h.putheader('User-agent', self.userAgent)
+        h.putrequest(
+            "GET", "/search?q=%40" + self.word + "&count=50&first=" + str(self.counter)
+        )
+        h.putheader("Host", self.hostname)
+        h.putheader("Cookie", "SRCHHPGUSR=ADLT=DEMOTE&NRSLT=50")
+        h.putheader("Accept-Language", "en-us,en")
+        h.putheader("User-agent", self.userAgent)
         h.endheaders()
         returncode, returnmsg, headers = h.getreply()
         self.results = h.getfile().read()
@@ -36,10 +36,17 @@ class search_bing:
 
     def do_search_api(self):
         h = httplib.HTTP(self.apiserver)
-        h.putrequest('GET', "/xml.aspx?Appid=" + self.bingApi + "&query=%40" +
-                     self.word + "&sources=web&web.count=40&web.offset=" + str(self.counter))
-        h.putheader('Host', "api.search.live.net")
-        h.putheader('User-agent', self.userAgent)
+        h.putrequest(
+            "GET",
+            "/xml.aspx?Appid="
+            + self.bingApi
+            + "&query=%40"
+            + self.word
+            + "&sources=web&web.count=40&web.offset="
+            + str(self.counter),
+        )
+        h.putheader("Host", "api.search.live.net")
+        h.putheader("User-agent", self.userAgent)
         h.endheaders()
         returncode, returnmsg, headers = h.getreply()
         self.results = h.getfile().read()
@@ -47,13 +54,19 @@ class search_bing:
 
     def do_search_vhost(self):
         h = httplib.HTTP(self.server)
-        h.putrequest('GET', "/search?q=ip:" + self.word +
-                     "&go=&count=50&FORM=QBHL&qs=n&first=" + str(self.counter))
-        h.putheader('Host', self.hostname)
+        h.putrequest(
+            "GET",
+            "/search?q=ip:"
+            + self.word
+            + "&go=&count=50&FORM=QBHL&qs=n&first="
+            + str(self.counter),
+        )
+        h.putheader("Host", self.hostname)
         h.putheader(
-            'Cookie', 'mkt=en-US;ui=en-US;SRCHHPGUSR=NEWWND=0&ADLT=DEMOTE&NRSLT=50')
-        h.putheader('Accept-Language', 'en-us,en')
-        h.putheader('User-agent', self.userAgent)
+            "Cookie", "mkt=en-US;ui=en-US;SRCHHPGUSR=NEWWND=0&ADLT=DEMOTE&NRSLT=50"
+        )
+        h.putheader("Accept-Language", "en-us,en")
+        h.putheader("User-agent", self.userAgent)
         h.endheaders()
         returncode, returnmsg, headers = h.getreply()
         self.results = h.getfile().read()
@@ -76,7 +89,7 @@ class search_bing:
             if self.bingApi == "":
                 print "Please insert your API key in the discovery/bingsearch.py"
                 sys.exit()
-        while (self.counter < self.limit):
+        while self.counter < self.limit:
             if api == "yes":
                 self.do_search_api()
                 time.sleep(0.3)
@@ -87,6 +100,6 @@ class search_bing:
 
     def process_vhost(self):
         # Maybe it is good to use other limit for this.
-        while (self.counter < self.limit):
+        while self.counter < self.limit:
             self.do_search_vhost()
             self.counter += 50

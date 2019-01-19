@@ -6,9 +6,8 @@ import re
 
 
 class search_crtsh:
-
     def __init__(self, word):
-        self.word = word.replace(' ', '%20')
+        self.word = word.replace(" ", "%20")
         self.results = ""
         self.totalresults = ""
         self.server = "www.google.com"
@@ -17,16 +16,17 @@ class search_crtsh:
         self.quantity = "100"
         self.counter = 0
 
-
     def do_search(self):
         try:
-            urly="https://crt.sh/?q=%25" + self.word
+            urly = "https://crt.sh/?q=%25" + self.word
         except Exception, e:
             print e
-        headers = {'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:34.0) Gecko/20100101 Firefox/34.0'}
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:34.0) Gecko/20100101 Firefox/34.0"
+        }
         try:
-            r=requests.get(urly,headers=headers)
-        except Exception,e:
+            r = requests.get(urly, headers=headers)
+        except Exception, e:
             print e
         self.results = r.content
         self.totalresults += self.results

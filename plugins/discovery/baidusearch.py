@@ -5,7 +5,6 @@ import sys
 
 
 class search_baidu:
-
     def __init__(self, word, limit):
         self.word = word
         self.total_results = ""
@@ -18,10 +17,9 @@ class search_baidu:
     def do_search(self):
         h = httplib.HTTP(self.server)
 
-        h.putrequest('GET', "/s?wd=%40" + self.word
-                     + "&pn=" + str(self.counter))
-        h.putheader('Host', self.hostname)
-        h.putheader('User-agent', self.userAgent)
+        h.putrequest("GET", "/s?wd=%40" + self.word + "&pn=" + str(self.counter))
+        h.putheader("Host", self.hostname)
+        h.putheader("User-agent", self.userAgent)
         h.endheaders()
         returncode, returnmsg, headers = h.getreply()
 

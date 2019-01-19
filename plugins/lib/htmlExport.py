@@ -3,10 +3,10 @@ from lib import graphs
 import re
 
 
-class htmlExport():
-
-    def __init__(self, users, hosts, vhosts, dnsres,
-                 dnsrev, file, domain, shodan, tldres):
+class htmlExport:
+    def __init__(
+        self, users, hosts, vhosts, dnsres, dnsrev, file, domain, shodan, tldres
+    ):
         self.users = users
         self.hosts = hosts
         self.vhost = vhosts
@@ -93,14 +93,15 @@ class htmlExport():
         page.h1("theHarvester results")
         page.h2("for :" + self.domain)
         page.h3("Dashboard:")
-        graph = graphs.BarGraph('vBar')
-        graph.values = [len(
-            self.users),
+        graph = graphs.BarGraph("vBar")
+        graph.values = [
+            len(self.users),
             len(self.hosts),
             len(self.vhost),
             len(self.tldres),
-            len(self.shodan)]
-        graph.labels = ['Emails', 'hosts', 'Vhost', 'TLD', 'Shodan']
+            len(self.shodan),
+        ]
+        graph.labels = ["Emails", "hosts", "Vhost", "TLD", "Shodan"]
         graph.showValues = 1
         page.body(graph.create())
         page.h3("E-mails names found:")
@@ -147,7 +148,7 @@ class htmlExport():
                 page.pre(res[1])
                 page.pre.close()
                 ban = res[1]
-                reg_server = re.compile('Server:.*')
+                reg_server = re.compile("Server:.*")
                 temp = reg_server.findall(res[1])
                 if temp != []:
                     shodanalysis.append(res[0] + ":" + temp[0])
@@ -161,7 +162,7 @@ class htmlExport():
                         repeated.append(x)
         page.body.close()
         page.html.close()
-        file = open(self.fname, 'w')
+        file = open(self.fname, "w")
         for x in page.content:
             try:
                 file.write(x)

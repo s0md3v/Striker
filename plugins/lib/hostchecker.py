@@ -8,8 +8,7 @@ import sys
 import socket
 
 
-class Checker():
-
+class Checker:
     def __init__(self, hosts):
         self.hosts = hosts
         self.realhosts = []

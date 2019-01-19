@@ -5,7 +5,6 @@ import myparser
 
 
 class search_pgp:
-
     def __init__(self, word):
         self.word = word
         self.results = ""
@@ -16,9 +15,9 @@ class search_pgp:
 
     def process(self):
         h = httplib.HTTP(self.server)
-        h.putrequest('GET', "/pks/lookup?search=" + self.word + "&op=index")
-        h.putheader('Host', self.hostname)
-        h.putheader('User-agent', self.userAgent)
+        h.putrequest("GET", "/pks/lookup?search=" + self.word + "&op=index")
+        h.putheader("Host", self.hostname)
+        h.putheader("User-agent", self.userAgent)
         h.endheaders()
         returncode, returnmsg, headers = h.getreply()
         print returncode

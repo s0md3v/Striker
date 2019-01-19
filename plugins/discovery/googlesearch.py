@@ -7,7 +7,6 @@ import requests
 
 
 class search_google:
-
     def __init__(self, word, limit, start):
         self.word = word
         self.results = ""
@@ -20,9 +19,17 @@ class search_google:
 
     def do_search(self):
         try:
-            urly = "http://" + self.server + "/search?num=" + self.quantity + \
-                "&start=" + str(self.counter) + \
-                "&hl=en&meta=&q=%40\"" + self.word + "\""
+            urly = (
+                "http://"
+                + self.server
+                + "/search?num="
+                + self.quantity
+                + "&start="
+                + str(self.counter)
+                + '&hl=en&meta=&q=%40"'
+                + self.word
+                + '"'
+            )
         except Exception, e:
             print e
         try:
@@ -34,8 +41,17 @@ class search_google:
 
     def do_search_profiles(self):
         try:
-            urly = "http://" + self.server + "/search?num=" + self.quantity + "&start=" + \
-                str(self.counter) + "&hl=en&meta=&q=site:www.google.com%20intitle:\"Google%20Profile\"%20\"Companies%20I%27ve%20worked%20for\"%20\"at%20" + self.word + "\""
+            urly = (
+                "http://"
+                + self.server
+                + "/search?num="
+                + self.quantity
+                + "&start="
+                + str(self.counter)
+                + '&hl=en&meta=&q=site:www.google.com%20intitle:"Google%20Profile"%20"Companies%20I%27ve%20worked%20for"%20"at%20'
+                + self.word
+                + '"'
+            )
         except Exception, e:
             print e
         try:
@@ -66,7 +82,7 @@ class search_google:
     def process(self):
         while self.counter <= self.limit and self.counter <= 1000:
             self.do_search()
-            #more = self.check_next()
+            # more = self.check_next()
             time.sleep(1)
             self.counter += 100
 

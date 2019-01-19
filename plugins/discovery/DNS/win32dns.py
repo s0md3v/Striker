@@ -35,15 +35,16 @@ def binipdisplay(s):
         ip = []
         for j in s1:
             ip.append(str(ord(j)))
-        ol.append(string.join(ip, '.'))
+        ol.append(string.join(ip, "."))
     return ol
 
 
 def stringdisplay(s):
-    '''convert "d.d.d.d,d.d.d.d" to ["d.d.d.d","d.d.d.d"].
+    """convert "d.d.d.d,d.d.d.d" to ["d.d.d.d","d.d.d.d"].
        also handle u'd.d.d.d d.d.d.d', as reporting on SF
-    '''
+    """
     import re
+
     return map(str, re.split("[ ,]", s))
 
 
@@ -51,14 +52,12 @@ def RegistryResolve():
     nameservers = []
     x = _winreg.ConnectRegistry(None, _winreg.HKEY_LOCAL_MACHINE)
     try:
-        y = _winreg.OpenKey(x,
-                            r"SYSTEM\CurrentControlSet\Services\Tcpip\Parameters")
+        y = _winreg.OpenKey(x, r"SYSTEM\CurrentControlSet\Services\Tcpip\Parameters")
     except EnvironmentError:  # so it isn't NT/2000/XP
         # windows ME, perhaps?
         try:  # for Windows ME
-            y = _winreg.OpenKey(x,
-                                r"SYSTEM\CurrentControlSet\Services\VxD\MSTCP")
-            nameserver, dummytype = _winreg.QueryValueEx(y, 'NameServer')
+            y = _winreg.OpenKey(x, r"SYSTEM\CurrentControlSet\Services\VxD\MSTCP")
+            nameserver, dummytype = _winreg.QueryValueEx(y, "NameServer")
             if nameserver and not (nameserver in nameservers):
                 nameservers.extend(stringdisplay(nameserver))
         except EnvironmentError:
@@ -73,16 +72,18 @@ def RegistryResolve():
     nameserver = _winreg.QueryValueEx(y, "NameServer")[0]
     _winreg.CloseKey(y)
     try:  # for win2000
-        y = _winreg.OpenKey(x,
-                            r"SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\DNSRegisteredAdapters")
+        y = _winreg.OpenKey(
+            x,
+            r"SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\DNSRegisteredAdapters",
+        )
         for i in range(1000):
             try:
                 n = _winreg.EnumKey(y, i)
                 z = _winreg.OpenKey(y, n)
-                dnscount, dnscounttype = _winreg.QueryValueEx(z,
-                                                              'DNSServerAddressCount')
-                dnsvalues, dnsvaluestype = _winreg.QueryValueEx(z,
-                                                                'DNSServerAddresses')
+                dnscount, dnscounttype = _winreg.QueryValueEx(
+                    z, "DNSServerAddressCount"
+                )
+                dnsvalues, dnsvaluestype = _winreg.QueryValueEx(z, "DNSServerAddresses")
                 nameservers.extend(binipdisplay(dnsvalues))
                 _winreg.CloseKey(z)
             except EnvironmentError:
@@ -90,17 +91,17 @@ def RegistryResolve():
         _winreg.CloseKey(y)
     except EnvironmentError:
         pass
-#
+    #
     try:  # for whistler
-        y = _winreg.OpenKey(x,
-                            r"SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces")
+        y = _winreg.OpenKey(
+            x, r"SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces"
+        )
         for i in range(1000):
             try:
                 n = _winreg.EnumKey(y, i)
                 z = _winreg.OpenKey(y, n)
                 try:
-                    nameserver, dummytype = _winreg.QueryValueEx(
-                        z, 'NameServer')
+                    nameserver, dummytype = _winreg.QueryValueEx(z, "NameServer")
                     if nameserver and not (nameserver in nameservers):
                         nameservers.extend(stringdisplay(nameserver))
                 except EnvironmentError:
@@ -112,7 +113,7 @@ def RegistryResolve():
     except EnvironmentError:
         # print "Key Interfaces not found, just do nothing"
         pass
-#
+    #
     _winreg.CloseKey(x)
     return nameservers
 

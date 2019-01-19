@@ -7,7 +7,6 @@ import time
 
 
 class search_google_labs:
-
     def __init__(self, list):
         self.results = ""
         self.totalresults = ""
@@ -25,9 +24,9 @@ class search_google_labs:
 
     def do_search(self):
         h = httplib.HTTP(self.server)
-        h.putrequest('GET', "/sets?hl=en&" + self.set)
-        h.putheader('Host', self.hostname)
-        h.putheader('User-agent', self.userAgent)
+        h.putrequest("GET", "/sets?hl=en&" + self.set)
+        h.putheader("Host", self.hostname)
+        h.putheader("User-agent", self.userAgent)
         h.endheaders()
         returncode, returnmsg, headers = h.getreply()
         self.results = h.getfile().read()

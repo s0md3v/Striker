@@ -6,9 +6,8 @@ import re
 
 
 class search_virustotal:
-
     def __init__(self, word):
-        self.word = word.replace(' ', '%20')
+        self.word = word.replace(" ", "%20")
         self.results = ""
         self.totalresults = ""
         self.server = "www.google.com"
@@ -23,7 +22,8 @@ class search_virustotal:
         except Exception, e:
             print e
         headers = {
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:34.0) Gecko/20100101 Firefox/34.0'}
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:34.0) Gecko/20100101 Firefox/34.0"
+        }
         try:
             r = requests.get(urly, headers=headers)
         except Exception, e:

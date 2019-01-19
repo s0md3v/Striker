@@ -5,7 +5,6 @@ import sys
 
 
 class search_dogpile:
-
     def __init__(self, word, limit):
         self.word = word
         self.total_results = ""
@@ -19,10 +18,11 @@ class search_dogpile:
         h = httplib.HTTP(self.server)
 
         # Dogpile is hardcoded to return 10 results
-        h.putrequest('GET', "/search/web?qsi=" + str(self.counter)
-                     + "&q=\"%40" + self.word + "\"")
-        h.putheader('Host', self.hostname)
-        h.putheader('User-agent', self.userAgent)
+        h.putrequest(
+            "GET", "/search/web?qsi=" + str(self.counter) + '&q="%40' + self.word + '"'
+        )
+        h.putheader("Host", self.hostname)
+        h.putheader("User-agent", self.userAgent)
         h.endheaders()
         returncode, returnmsg, headers = h.getreply()
 

@@ -5,11 +5,10 @@ except:
 from urllib2 import urlopen
 from urllib import urlencode
 
-__all__ = ['WebAPI']
+__all__ = ["WebAPI"]
 
 
 class WebAPIError(Exception):
-
     def __init__(self, value):
         self.value = value
 
@@ -22,7 +21,6 @@ class WebAPI:
     """Wrapper around the SHODAN webservices API"""
 
     class DatalossDb:
-
         def __init__(self, parent):
             self.parent = parent
 
@@ -50,15 +48,13 @@ class WebAPI:
             A dictionary with 2 main items: matches (list) and total (int).
 
             """
-            return self.parent._request('datalossdb/search', dict(**kwargs))
+            return self.parent._request("datalossdb/search", dict(**kwargs))
 
     class Exploits:
-
         def __init__(self, parent):
             self.parent = parent
 
-        def search(self, query, sources=[],
-                   cve=None, osvdb=None, msb=None, bid=None):
+        def search(self, query, sources=[], cve=None, osvdb=None, msb=None, bid=None):
             """Search the entire Shodan Exploits archive using the same query syntax
             as the website.
 
@@ -74,19 +70,18 @@ class WebAPI:
 
             """
             if sources:
-                query += ' source:' + ','.join(sources)
+                query += " source:" + ",".join(sources)
             if cve:
-                query += ' cve:%s' % (str(cve).strip())
+                query += " cve:%s" % (str(cve).strip())
             if osvdb:
-                query += ' osvdb:%s' % (str(osvdb).strip())
+                query += " osvdb:%s" % (str(osvdb).strip())
             if msb:
-                query += ' msb:%s' % (str(msb).strip())
+                query += " msb:%s" % (str(msb).strip())
             if bid:
-                query += ' bid:%s' % (str(bid).strip())
-            return self.parent._request('search_exploits', {'q': query})
+                query += " bid:%s" % (str(bid).strip())
+            return self.parent._request("search_exploits", {"q": query})
 
     class ExploitDb:
-
         def __init__(self, parent):
             self.parent = parent
 
@@ -103,7 +98,7 @@ class WebAPI:
             data            -- Contents of the file
 
             """
-            return self.parent._request('exploitdb/download', {'id': id})
+            return self.parent._request("exploitdb/download", {"id": id})
 
         def search(self, query, **kwargs):
             """Search the ExploitDB archive.
@@ -130,13 +125,9 @@ class WebAPI:
             type
 
             """
-            return (
-                self.parent._request(
-                    'exploitdb/search', dict(q=query, **kwargs))
-            )
+            return self.parent._request("exploitdb/search", dict(q=query, **kwargs))
 
     class Msf:
-
         def __init__(self, parent):
             self.parent = parent
 
@@ -152,12 +143,12 @@ class WebAPI:
             content-type    -- Mimetype
             data            -- File content
             """
-            return self.parent._request('msf/download', {'id': id})
+            return self.parent._request("msf/download", {"id": id})
 
         def search(self, query, **kwargs):
             """Search for a Metasploit module.
             """
-            return self.parent._request('msf/search', dict(q=query, **kwargs))
+            return self.parent._request("msf/search", dict(q=query, **kwargs))
 
     def __init__(self, key):
         """Initializes the API object.
@@ -167,7 +158,7 @@ class WebAPI:
 
         """
         self.api_key = key
-        self.base_url = 'http://www.shodanhq.com/api/'
+        self.base_url = "http://www.shodanhq.com/api/"
         self.dataloss = self.DatalossDb(self)
         self.exploits = self.Exploits(self)
         self.exploitdb = self.ExploitDb(self)
@@ -185,23 +176,17 @@ class WebAPI:
 
         """
         # Add the API key parameter automatically
-        params['key'] = self.api_key
+        params["key"] = self.api_key
 
         # Send the request
-        data = urlopen(
-            self.base_url +
-            function +
-            '?' +
-            urlencode(
-                params)).read(
-        )
+        data = urlopen(self.base_url + function + "?" + urlencode(params)).read()
 
         # Parse the text into JSON
         data = loads(data)
 
         # Raise an exception if an error occurred
-        if data.get('error', None):
-            raise WebAPIError(data['error'])
+        if data.get("error", None):
+            raise WebAPIError(data["error"])
 
         # Return the data
         return data
@@ -215,7 +200,7 @@ class WebAPI:
         Returns:
         A list of software that matched the given banner.
         """
-        return self._request('fingerprint', {'banner': banner})
+        return self._request("fingerprint", {"banner": banner})
 
     def host(self, ip):
         """Get all available information on an IP.
@@ -228,7 +213,7 @@ class WebAPI:
         subject to API key restrictions.
 
         """
-        return self._request('host', {'ip': ip})
+        return self._request("host", {"ip": ip})
 
     def search(self, query):
         """Search the SHODAN database.
@@ -241,4 +226,4 @@ class WebAPI:
         Visit the website for more detailed information.
 
         """
-        return self._request('search', {'q': query})
+        return self._request("search", {"q": query})
