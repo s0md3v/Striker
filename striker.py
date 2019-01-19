@@ -171,20 +171,28 @@ def bypass(domain):
 
 def dnsdump(domain):
     res = DNSDumpsterAPI(False).search(domain)
+    if not res:
+        print '\n%s DNS Records' % bad
+        return
+
     print '\n%s DNS Records' % good
-    for entry in res['dns_records']['dns']:
+
+    for entry in res.get('dns_records', {}).get('dns', []):
         print '{domain} ({ip}) {as} {provider} {country}'.format(**entry)
-    for entry in res['dns_records']['mx']:
+
+    for entry in res.get('dns_records', {}).get('mx', []):
         print '\n%s MX Records' % good
         print '{domain} ({ip}) {as} {provider} {country}'.format(**entry)
     print '\n\033[1;32m[+]\033[1;m Host Records (A)'
-    for entry in res['dns_records']['host']:
-        if entry['reverse_dns']:
+
+    for entry in res.get('dns_records', {}).get('host', []):
+        if entry.get('reverse_dns', None):
             print '{domain} ({reverse_dns}) ({ip}) {as} {provider} {country}'.format(**entry)
         else:
             print '{domain} ({ip}) {as} {provider} {country}'.format(**entry)
     print '\n%s TXT Records' % good
-    for entry in res['dns_records']['txt']:
+
+    for entry in res.get('dns_records', {}).get('txt', []):
         print entry
     print '\n%s DNS Map: https://dnsdumpster.com/static/map/%s.png\n' % (good, domain.strip('www.'))
 
