@@ -77,11 +77,11 @@ class DNSDumpsterAPI(object):
                     url=dnsdumpster_url, code=req.status_code),
                 file=sys.stderr,
             )
-            return []
+            return {}
 
         if 'error' in req.content.decode('utf-8'):
             print("There was an error getting results", file=sys.stderr)
-            return []
+            return {}
 
         soup = BeautifulSoup(req.content, 'html.parser')
         tables = soup.findAll('table')
