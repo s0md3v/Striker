@@ -8,13 +8,15 @@ def wappalyzer(response, js, scripts):
 	result = []
 	headers = response.headers
 	source_code = response.text
-	if 'Cookie' in headers and 'cookies' in signatures[app]:
-		for pattern in signatures['apps'][app]['cookies']:
-			if re.search(deJSON(pattern), headers['Cookie']):
-				result.append(app)
-				if 'implies' in signatures['apps'][app]:
-					for tech in signatures['apps'][app]['implies']:
+	if 'Cookie' in headers:
+		for app in signatures['apps']:
+			if 'cookies' in signatures[app]:
+				for pattern in signatures['apps'][app]['cookies']:
+					if re.search(deJSON(pattern), headers['Cookie']):
 						result.append(app)
+						if 'implies' in signatures['apps'][app]:
+							for tech in signatures['apps'][app]['implies']:
+								result.append(app)
 	for app in signatures['apps']:
 		if 'headers' in signatures['apps'][app]:
 			for header in signatures['apps'][app]['headers']:
