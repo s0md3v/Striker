@@ -108,13 +108,13 @@ def js_extractor(response):
 
 
 def handle_anchor(parent_url, url):
+    scheme = urlparse(parent_url).scheme
     if url[:4] == 'http':
         return url
     elif url[:2] == '//':
         return scheme + ':' + url
     elif url.startswith('/'):
         host = urlparse(parent_url).netloc
-        scheme = urlparse(parent_url).scheme
         parent_url = scheme + '://' + host
         return parent_url + url
     elif parent_url.endswith('/'):
