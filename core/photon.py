@@ -50,7 +50,7 @@ def photon(seedUrl):
             this_url = handle_anchor(target, link)
             if urlparse(this_url).netloc == host:
                 storage.add(this_url)
-    for x in range(3):
+    for x in range(2):
         urls = storage - processed  # urls to crawl = all urls - urls that have been crawled
         threadpool = concurrent.futures.ThreadPoolExecutor(
             max_workers=10)
