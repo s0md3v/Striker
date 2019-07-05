@@ -1,14 +1,19 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import os
 import sys
 import json
 import random
 import socket
 import argparse
+import requests.exceptions
 import concurrent.futures
 
 from urllib.parse import urlparse
 
 import core.config
+from core.requester import requester
 from core.utils import loader, updateVar, var
 from core.colors import red, white, end, green, dgreen, info, good, bad, run, red_line
 
@@ -34,9 +39,15 @@ from modules.security_trails import security_trails
 
 print ('%s Turning on radar' % run)
 dataset = {}
-raw_subdomains = list(set(findsubdomains(sys.argv[1]) + security_trails(sys.argv[1])))
+source_1 = findsubdomains(sys.argv[1])
+try:
+	source_2 = security_trails(sys.argv[1])
+except AttributeError:
+	source_2 = []
+raw_subdomains = list(set(source_1 + source_2))
 raw_subdomains.append(sys.argv[1])
 print ('%s %i targets were caught on radar.' % (info, len(raw_subdomains)))
+
 unique_ips = {}
 for raw_subdomain in raw_subdomains:
 	try:
@@ -64,50 +75,34 @@ for raw_subdomain in raw_subdomains:
 
 # print ('%s Deploying wavelet analyzing module to detect hidden targets.' % run)
 # print ('Wavelets analyzed [1/1]')
+print ('%s Deploying Zoom for subdomain takeovers' % run)
 print ('%s Deploying Photon for component assessment' % run)
 print ('%s Deploying Alpha for software fingerprinting' % run)
 print ('%s Deploying Zetanize for identifying entry points' % run)
 print ('%s ETA: %i seconds' % (info, 10 * 2 * len(dataset)))
 
 for subdomain in dataset:
+	url = dataset[subdomain]['schema'] + '://' + subdomain
+	takeover = False
+	for each in var('sub_takeover'):
+		for i in each['cname']:
+			if i in url:
+				try:
+					response = requester(url)
+					for i in each['fingerprint']:
+						if i in response.text:
+							takeover = True
+							break
+				except requests.exceptions.ConnectionError:
+					if each['nxdomain']:
+						takeover = True
+				break
+			break
 	dataset[subdomain]['cms'] = whatcms(subdomain)
-	crawled = photon(dataset[subdomain]['schema'] + '://' + subdomain)
+	crawled = photon(url)
 	dataset[subdomain]['forms'] = crawled[0]
 	dataset[subdomain]['all_urls'] = list(crawled[1])
 	dataset[subdomain]['technologies'] = list(crawled[2])
 	dataset[subdomain]['outdated_libs'] = crawled[3]
 
 print (json.dumps(dataset, indent=4))
-
-# print ('%s Deploying Bolt for CSRF detection' % run)
-# print ('%s Deploying XSStrike for XSS detection' % run)
-# print ('%s Deploying Zoom to scan for camouflaged components' % run)
-# print ('%s Deploying Zeta to find open redirect vulnerabilities' % run)
-# print ('%s Deploying Hawk to find file inclusion vulnerabilities' % run)
-
-# for subdomain in dataset:
-# 	print ('%s Attacking [%s]' % (info, subdomain))
-# 	for form in dataset[subdomain]['forms']:
-# 		for each in form.values():
-#             url = each['action']
-#             if url:
-#                 if url.startswith(main_url):
-#                     pass
-#                 elif url.startswith('//') and url[2:].startswith(host):
-#                     url = scheme + '://' + url[2:]
-#                 elif url.startswith('/'):
-#                     url = scheme + '://' + host + url
-#                 elif re.match(r'\w', url[0]):
-#                     url = scheme + '://' + host + '/' + url
-#                 if url not in core.config.globalVariables['checkedForms']:
-#                     core.config.globalVariables['checkedForms'][url] = []
-#                 method = each['method']
-#                 GET = True if method == 'get' else False
-#                 inputs = each['inputs']
-#                 paramData = {}
-#                 for one in inputs:
-#                     paramData[one['name']] = one['value']
-#                     for paramName in paramData.keys():
-#                             core.config.globalVariables['checkedForms'][url].append(paramName)
-#                             paramsCopy = copy.deepcopy(paramData)
-
