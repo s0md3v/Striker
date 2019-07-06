@@ -11,6 +11,28 @@ from modules.retirejs import retirejs
 from modules.wappalyzer import wappalyzer
 
 
+def is_link(url, processed):
+    """
+    Determine whether or not a link should be crawled
+    A url should not be crawled if it
+        - Is a file
+        - Has already been crawled
+    Args:
+        url: str Url to be processed
+        processed: list[str] List of urls that have already been crawled
+    Returns:
+        bool If `url` should be crawled
+    """
+    if url not in processed:
+        if url.startswith('#') or url.startswith('javascript:'):
+            return False
+        is_file = url.endswith(['pdf', 'jpg', 'jpeg', 'png', 'docx', 'csv', 'xls'])
+        if is_file:
+            return False
+        return True
+    return False
+
+
 def photon(seedUrl):
     forms = []  # web forms
     processed = set()  # urls that have been crawled
@@ -43,13 +65,13 @@ def photon(seedUrl):
         all_techs.extend(wappalyzer(raw_response, js, scripts))
         parsed_response = zetanize(response)
         forms.append(parsed_response)
-        matches = re.finditer(r'<[aA][^>]*?(?:href|HREF)=[\'"`]?([^>]*?)[\'"`]?>', response)
+        matches = re.finditer(r'<[aA][^>]*?(?:href|HREF)=[\'"`]?([^\s>]*?)[\'"`]?>', response)
         for link in matches:  # iterate over the matches
             # remove everything after a "#" to deal with in-page anchors
-            link = link.group(1).split('#')[0]
-            this_url = handle_anchor(target, link)
-            if urlparse(this_url).netloc == host:
-                storage.add(this_url)
+            this_url = handle_anchor(target, link.group(1))
+            if is_link(this_url, processed):
+                if urlparse(this_url).netloc == host:
+                    storage.add(this_url.split('#')[0])
     for x in range(2):
         urls = storage - processed  # urls to crawl = all urls - urls that have been crawled
         threadpool = concurrent.futures.ThreadPoolExecutor(
