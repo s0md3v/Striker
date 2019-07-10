@@ -15,7 +15,7 @@ from urllib.parse import urlparse
 import core.config
 from core.requester import requester
 from core.utils import loader, updateVar, var
-from core.colors import red, white, end, green, dgreen, info, good, bad, run, red_line
+from core.colors import red, white, end, green, info, good, bad, run, red_line
 
 print ('''%s
 .                   
