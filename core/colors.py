@@ -15,7 +15,6 @@ if not colors:
 else:
     white = '\033[97m'
     green = '\033[92m'
-    dgreen = '\033[32m'
     red = '\033[91m'
     yellow = '\033[93m'
     end = '\033[0m'
