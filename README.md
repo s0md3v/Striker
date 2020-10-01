@@ -23,7 +23,8 @@
 ### Important Notice
 Striker 2.0 is still in prototype phase, which means it's not intended to be used by regular users. It has been made public for contrbutions to make the development faster.\
 **Usage:** `python3 striker.py example.com`
-
+### OS checked
+$ this script is tested with parrot os and ubuntu os in both of them this works perfectly fine
 ### Workflow
 ##### Phase 1: Attack Surface Discovery
 This phase includes finding subdomains of the user specified domain, filtering alive hosts as well scanning of 1000 most common TCP ports.
