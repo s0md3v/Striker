@@ -25,7 +25,7 @@ def make_list(data):
 
 def var(name):
     return core.config.globalVars[name]
-
+        
 
 def updateVar(name, value, mode=None):
     if mode:
