@@ -1,8 +1,10 @@
 import re
+import json
 
 from core.utils import var, deJSON, make_list
 
-signatures = var('tech_signatures')
+with open('db/tech_signatures.json') as json_file:
+        signatures = json.load(json_file)
 
 def wappalyzer(response, js, scripts):
 	result = []
@@ -50,3 +52,4 @@ def wappalyzer(response, js, scripts):
 							for tech in signatures['apps'][app]['implies']:
 								result.append(app)
 	return result
+        #signatures.close()
