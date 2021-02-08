@@ -84,7 +84,9 @@ print ('%s ETA: %i seconds' % (info, 10 * 2 * len(dataset)))
 for subdomain in dataset:
 	url = dataset[subdomain]['schema'] + '://' + subdomain
 	takeover = False
-	for each in var('sub_takeover'):
+	with open('db/sub_takeover.json') as json_file:
+		sub_db = json.load(json_file)
+	for each in sub_db:
 		for i in each['cname']:
 			if i in url:
 				try:
