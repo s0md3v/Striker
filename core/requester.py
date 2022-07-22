@@ -18,8 +18,7 @@ def requester(url, data=None, GET=True):
         if 'User-Agent' not in headers:
             headers['User-Agent'] = random.choice(user_agents)
     if GET:
-        response = requests.get(
-            url, params=data, headers=headers, verify=False)
+        response = requests.get(url, params=data, headers=headers, verify=False)
     else:
         response = requests.post(url, data=data, headers=headers, verify=False)
     return response
