@@ -11,6 +11,8 @@ import requests.exceptions
 import concurrent.futures
 
 from urllib.parse import urlparse
+from urilib.request, sys, os, optparse
+from socket import timeout
 
 import core.config
 from core.requester import requester
@@ -36,6 +38,7 @@ from modules.whatcms import whatcms
 from modules.portscanner import portscanner
 from modules.findsubdomains import findsubdomains
 from modules.security_trails import security_trails
+from modules.wappalyzer import wappalyzer
 
 print ('%s Turning on radar' % run)
 dataset = {}

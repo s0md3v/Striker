@@ -9,14 +9,14 @@
 <h4 align="center">Recon & Vulnerability Scanning Suite</h4>
 
 <p align="center">
-  <a href="https://github.com/s0md3v/Striker/releases">
-    <img src="https://img.shields.io/github/release/s0md3v/Striker.svg">
+  <a href="https://github.com/gitadvisor/Striker/releases">
+    <img src="https://img.shields.io/github/release/gitadvisor/Striker.svg">
   </a>
-  <a href="https://travis-ci.com/s0md3v/Striker">
+  <a href="https://travis-ci.com/gitadvisor/Striker">
     <img src="https://img.shields.io/travis/com/s0md3v/Striker.svg">
   </a>
-  <a href="https://github.com/s0md3v/Striker/issues?q=is%3Aissue+is%3Aclosed">
-      <img src="https://img.shields.io/github/issues-closed-raw/s0md3v/Striker.svg">
+  <a href="https://github.com/gitadvisor/Striker/issues?q=is%3Aissue+is%3Aclosed">
+      <img src="https://img.shields.io/github/issues-closed-raw/gitadvisor/Striker.svg">
   </a>
 </p>
 
