@@ -7,4 +7,4 @@ WORKDIR Striker
 
 RUN pip3 install -r requirements.txt
 ENTRYPOINT ["python3", "striker.py"]
-CMD["--help"]
+CMD ["--help"]
